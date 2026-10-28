@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "NovelAI Helper",
+  "version": "1.05",
+  "description": "NovelAI助手：NovelAI 绘图页汉化、标签联想与提示词增强、历史管理。",
+  "minimum_chrome_version": "105",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "NovelAI Helper",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://danbooru.donmai.us/*",
+    "https://gelbooru.com/*",
+    "https://raw.githubusercontent.com/*",
+    "https://cdn.jsdelivr.net/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://novelai.net/image*"
+      ],
+      "js": [
+        "content/bridge.js",
+        "content/base.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://novelai.net/image*"
+      ],
+      "js": [
+        "content/session-core.js",
+        "content/session-viewer.js",
+        "content/session-content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}
