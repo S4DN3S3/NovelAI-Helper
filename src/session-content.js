@@ -1,5 +1,3 @@
-// 历史管理面板：仅在 NovelAI 的「Load a previous session?」对话框出现时显示，
-// 并与该对话框对齐，列出 / 复制 / 导出 / 导入历史。
 (() => {
   if (window.top !== window || document.getElementById('nsm-host')) return;
   const T = globalThis.SessionTool;
@@ -103,8 +101,6 @@
   const $ = (s) => root.querySelector(s);
   const panel = $('#panel');
   const panelHeader = panel.querySelector('header');
-  // 找到「Load a previous session?」对话框。兼容按钮文字已汉化、
-  // 以及对话框不是全屏遮罩的情况。
   function isVisible(el) {
     if (!el) return false;
     const rect = el.getBoundingClientRect();
@@ -145,9 +141,6 @@
         node = node.parentElement;
       }
       if (candidate) {
-        // 按钮向上找到的常常是内部“会话卡片”，不是整个对话框。
-        // 用标题和“新会话”按钮的最近公共祖先作为外框，才能让面板
-        // 顶边真正对齐官方对话框，而不是对齐到中间某张卡片。
         const frame = commonAncestor(title, button);
         const element = frame && frame !== document.body
           ? frame
@@ -165,8 +158,6 @@
     };
   }
 
-  // 与官方对话框顶部对齐：优先右侧，其次左侧，最后下方。
-  // 面板只吸附一次，之后保持固定位置；页面滚动或生成中的 DOM 更新都不再移动它。
   let pinnedDialogInfo = null;
   function positionPanel(dialog, force = false) {
     if (manualPosition) return;
@@ -198,7 +189,6 @@
       left = clamp(rect.right - width, EDGE, innerWidth - width - EDGE);
       top = Math.max(EDGE, rect.top - GAP - 260);
     } else {
-      // 两侧都放不下时放到对话框下方，并尽量和对话框左边对齐。
       width = Math.min(MAX_WIDTH, innerWidth - EDGE * 2);
       left = clamp(rect.left, EDGE, innerWidth - width - EDGE);
       top = Math.max(rect.bottom, anchorTop) + GAP;
@@ -209,11 +199,9 @@
     host.style.right = 'auto';
     host.style.bottom = 'auto';
     host.style.width = `${width}px`;
-    // 底部留出 260px 给右下角工具栏/生成按钮，避免面板覆盖后无法点击。
     panel.style.maxHeight = `${Math.max(160, Math.min(650, innerHeight - top - 260))}px`;
   }
 
-  // 通过标题栏拖动面板，避开导入/刷新按钮。
   let dragState = null;
   let manualPosition = false;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -261,7 +249,6 @@
     finally { if (btn) btn.disabled = btn.dataset.locked === '1'; }
   }
 
-  // 被锁定的按钮（配额原因）在 guarded() 结束后仍保持禁用。
   function lock(btn, locked, why) { btn.dataset.locked = locked ? '1' : ''; btn.disabled = locked; btn.title = locked ? why : ''; }
   const fb = (b) => T.fmtBytes(b);
 
@@ -286,7 +273,6 @@
 
     let sessions;
     try {
-      // 先只读历史元数据，面板立刻出现；体积统计放到后台空闲时做。
       sessions = await T.listSessions();
     } catch (e) {
       msg(e.message, true);
@@ -308,7 +294,7 @@
       const info = document.createElement('div');
       info.className = 'info';
       info.innerHTML = '<div></div><div class="id"></div>';
-      info.firstChild.textContent = `${s.name || 'History'} / ${s.imageCount ?? '?'} 张 / 统计中…`;
+      info.firstChild.textContent = `${T.displayName(s.name)} / ${s.imageCount ?? '?'} 张 / 统计中…`;
       info.lastChild.textContent = `${fmt(s.lastSavedAt)}\n${s.id}`;
       const act = document.createElement('div');
       act.className = 'actions';
@@ -353,7 +339,7 @@
       renderQuota(q);
       for (const { session, info, dup } of rows) {
         const size = q.bySession.get(session.id) || 0;
-        info.firstChild.textContent = `${session.name || 'History'} / ${session.imageCount ?? '?'} 张 / ${fb(size)}`;
+        info.firstChild.textContent = `${T.displayName(session.name)} / ${session.imageCount ?? '?'} 张 / ${fb(size)}`;
         const blocked = q.used + size > q.quota;
         lock(dup, blocked, `复制后将超出上限（当前 ${fb(q.used)} ＋ ${fb(size)} > 上限 ${fb(q.quota)}）`);
         if (blocked) dup.textContent = '不可复制';
@@ -395,8 +381,6 @@
   }
   function update(force = false) {
     if (!wasShown && !force && Date.now() < nextDialogScanAt) return;
-    // 已经打开时只做一次廉价的可见性检查，避免生成过程中反复扫描整页
-    // 按钮并重新定位面板。面板位置在打开时固定，不再跟着页面抖动。
     if (wasShown && pinnedDialogInfo) {
       const titleGone = pinnedDialogInfo.title
         && (!pinnedDialogInfo.title.isConnected || !isVisible(pinnedDialogInfo.title));
@@ -453,4 +437,3 @@
   msg(IDLE);
   schedule(true);
 })();
-

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "NovelAI Helper",
-  "version": "1.05",
+  "version": "1.3",
   "description": "NovelAI助手：NovelAI 绘图页汉化、标签联想与提示词增强、历史管理。",
   "minimum_chrome_version": "105",
   "icons": {
@@ -20,13 +20,15 @@
     }
   },
   "permissions": [
-    "storage"
+    "storage",
+    "unlimitedStorage"
   ],
   "host_permissions": [
     "https://danbooru.donmai.us/*",
     "https://gelbooru.com/*",
     "https://raw.githubusercontent.com/*",
-    "https://cdn.jsdelivr.net/*"
+    "https://cdn.jsdelivr.net/*",
+    "https://huggingface.co/*"
   ],
   "background": {
     "service_worker": "background.js"

@@ -1,5 +1,3 @@
-// NovelAI 图像生成会话工具：核心模块（IndexedDB 读写 + ZIP）。
-// 运行在 novelai.net 页面源中（内容脚本或 DevTools 控制台）。
 globalThis.SessionTool = (() => {
   const HIST_DB = 'generated-image-history';
   const IMG_DB = 'generated-images';
@@ -12,14 +10,12 @@ globalThis.SessionTool = (() => {
   });
 
   async function openDb(name) {
-    // 对不存在的数据库调用 indexedDB.open() 会创建一个空库，所以先检查一下。
     const dbs = await indexedDB.databases();
     if (!dbs.some((d) => d.name === name)) throw new Error(`未找到 IndexedDB "${name}"（请先打开一次 NovelAI 的图像生成页面）`);
     return req(indexedDB.open(name));
   }
-  const prefixRange = (id) => IDBKeyRange.bound(id + ':', id + ':\uffff');
+  const prefixRange = (id) => IDBKeyRange.bound(id + ':', id + ':' + String.fromCharCode(0xffff));
 
-  // 写入记录：区分内联 keyPath（值自身携带键）与外部键两种情况
   function putRec(store, value, key) {
     if (store.keyPath) return store.put(value);
     return store.put(value, key);
@@ -77,7 +73,6 @@ globalThis.SessionTool = (() => {
     } finally { hdb.close(); }
   }
 
-  // 先写图像、最后写 meta，这样只写了一半的会话不会出现在列表里。
   async function writeSession(newId, data, name) {
     try {
       const idb = await openDb(IMG_DB);
@@ -107,10 +102,13 @@ globalThis.SessionTool = (() => {
     return newId;
   }
 
-  // ---- 存储配额（本工具自己的保护机制；统计本浏览器中所有会话的图像字节数）----
   const GB = 1e9;
   const QUOTA_KEY = 'nsm-quota-bytes';
   const fmtBytes = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : (b / 1e6).toFixed(b >= 1e8 ? 0 : 1) + ' MB');
+  const displayName = (name) => {
+    const raw = String(name || 'History').replace(/\s*\((副本|导入)\)$/, '（$1）');
+    return raw === 'History' ? '历史记录' : raw.replace(/^History\b/, '历史记录');
+  };
 
   async function imageUsage() {
     const db = await openDb(IMG_DB);
@@ -133,8 +131,6 @@ globalThis.SessionTool = (() => {
     try { if (bytes == null) localStorage.removeItem(QUOTA_KEY); else localStorage.setItem(QUOTA_KEY, String(Math.round(bytes))); } catch (_) { }
   }
 
-  // 默认上限：固定 10 GB。（navigator.storage.estimate().quota 不能作为依据：Chrome 在那里给出的
-  // 是「已用量 + 10 GiB」这种人为数值，与真实执行的上限和淘汰机制无关。）
   async function quotaInfo() {
     const u = await imageUsage();
     const auto = 10 * GB;
@@ -158,11 +154,10 @@ globalThis.SessionTool = (() => {
     const data = await readSession(id);
     await assertRoom(sumBlobs(data.images), '复制');
     const newId = crypto.randomUUID();
-    await writeSession(newId, data, (data.meta.name || 'History') + ' (副本)');
+    await writeSession(newId, data, displayName(data.meta.name) + '（副本）');
     return newId;
   }
 
-  // ---- JSON 与结构化值互转（这里只有 Date 需要特殊处理）----
   const enc = (v) => {
     if (v instanceof Date) return { $date: v.toISOString() };
     if (Array.isArray(v)) return v.map(enc);
@@ -181,7 +176,6 @@ globalThis.SessionTool = (() => {
     return v;
   };
 
-  // ---- 精简 ZIP 实现（写入只做存储，读取支持存储 / deflate）----
   const crcTable = (() => {
     const t = new Uint32Array(256);
     for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
@@ -271,10 +265,9 @@ globalThis.SessionTool = (() => {
     const data = { meta: dec(doc.meta), groups: doc.groups.map(([g, v]) => [g, dec(v)]), boards: dec(doc.boards), images };
     await assertRoom(sumBlobs(images), '导入');
     const newId = crypto.randomUUID();
-    await writeSession(newId, data, (data.meta.name || 'History') + ' (导入)');
+    await writeSession(newId, data, displayName(data.meta.name) + '（导入）');
     return newId;
   }
 
-  return { listSessions, readSession, duplicateSession, exportSessionZip, importSessionZip, deleteSessionData, quotaInfo, setQuotaBytes, fmtBytes, GB, _zip: { zipBuild, zipRead, crc32 } };
+  return { listSessions, readSession, duplicateSession, exportSessionZip, importSessionZip, quotaInfo, setQuotaBytes, fmtBytes, displayName, GB };
 })();
-

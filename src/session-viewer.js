@@ -1,38 +1,111 @@
-// 画廊查看器：把会话中的原图与生成信息渲染到一个新标签页。
-// 新标签页与 novelai.net 同源（由 window.open 打开），因此可以显示这里创建的 blob: URL。
-// 全部使用 DOM API 构建（不含内联脚本）。
 globalThis.SessionViewer = (() => {
   const CSS = `
-:root{color-scheme:dark;--sz:220px}
+:root{
+  color-scheme:dark;
+  --sz:220px;
+  --sv-bg:#12131c;
+  --sv-surface:#1a1c2a;
+  --sv-hint:#262944;
+  --sv-text:#e8e8f0;
+  --sv-muted:#aab;
+  --sv-border:#33365a;
+  --sv-border-soft:#444876;
+  --sv-accent:#8fa5ff;
+  --sv-accent-text:#12131c;
+  --sv-hover:#262946;
+  --sv-danger:#ff8484;
+  --sv-scroll:#4b4e6b;
+  --sv-shadow:0 18px 48px rgba(0,0,0,.55);
+  --sv-font:system-ui,sans-serif;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#12131c;color:#e8e8f0;font:14px/1.5 system-ui,sans-serif}
-header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 14px;background:#1a1c2a;border-bottom:1px solid #33365a}
+body{margin:0;background:var(--sv-bg);color:var(--sv-text);font:14px/1.5 var(--sv-font);scrollbar-color:var(--sv-scroll) transparent}
+header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 14px;background:var(--sv-surface);border-bottom:1px solid var(--sv-border)}
 header h1{font-size:15px;margin:0;flex:1 1 220px}
-input,select,button{background:#262944;color:#e8e8f0;border:1px solid #444876;border-radius:6px;padding:4px 8px;font:inherit}
-button{cursor:pointer} button:hover{border-color:#8fa5ff} input[type=range]{padding:0;width:120px}
+input,select,button{background:var(--sv-hint);color:var(--sv-text);border:1px solid var(--sv-border-soft);border-radius:6px;padding:4px 8px;font:inherit}
+button{cursor:pointer} button:hover{border-color:var(--sv-accent)} input[type=range]{padding:0;width:120px}
 #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--sz),1fr));gap:10px;padding:14px}
-figure{margin:0;background:#1a1c2a;border-radius:8px;overflow:hidden;cursor:pointer;border:1px solid transparent}
-figure:hover{border-color:#8fa5ff} figure[hidden]{display:none}
+figure{margin:0;background:var(--sv-surface);border-radius:8px;overflow:hidden;cursor:pointer;border:1px solid transparent}
+figure:hover{border-color:var(--sv-accent)} figure[hidden]{display:none}
 figure img,figure .ph{width:100%;aspect-ratio:1/1;object-fit:contain;background:#000;display:block}
-figure .ph{display:flex;align-items:center;justify-content:center;color:#778;font-size:12px}
-figcaption{padding:4px 8px;font-size:11px;color:#aab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#lb{position:fixed;inset:0;z-index:10;background:#000e;display:grid;grid-template-columns:1fr minmax(280px,420px);opacity:0;visibility:hidden;pointer-events:none}
+figure .ph{display:flex;align-items:center;justify-content:center;color:var(--sv-muted);font-size:12px}
+figcaption{padding:4px 8px;font-size:11px;color:var(--sv-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#lb{position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.87);display:grid;grid-template-columns:1fr minmax(280px,420px);opacity:0;visibility:hidden;pointer-events:none}
 #lb.on{opacity:1;visibility:visible;pointer-events:auto}
 #lb.closing{opacity:0;visibility:visible;pointer-events:none}
 #lbimg{display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;padding:10px;position:relative}
 #lbimg img{max-width:100%;max-height:100vh;object-fit:contain}
 #lbimg button.nav{position:absolute;top:50%;transform:translateY(-50%);font-size:22px;padding:8px 12px;opacity:.8}
 #lbprev{left:8px} #lbnext{right:8px}
-#info{overflow:auto;background:#1a1c2a;padding:12px;border-left:1px solid #33365a}
-.sec{margin-bottom:10px} .sec b{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#8fa5ff;margin-bottom:2px}
-.sec pre{margin:0;white-space:pre-wrap;word-break:break-word;background:#12131c;padding:6px 8px;border-radius:6px;font:12px/1.5 ui-monospace,monospace}
-footer{padding:10px 14px;color:#778;font-size:12px}
+#info{overflow:auto;background:var(--sv-surface);padding:12px;border-left:1px solid var(--sv-border);scrollbar-color:var(--sv-scroll) transparent}
+.sec{margin-bottom:10px} .sec b{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sv-accent);margin-bottom:2px}
+.sec pre{margin:0;white-space:pre-wrap;word-break:break-word;background:var(--sv-bg);padding:6px 8px;border-radius:6px;font:12px/1.5 ui-monospace,monospace;scrollbar-color:var(--sv-scroll) transparent}
+footer{padding:10px 14px;color:var(--sv-muted);font-size:12px}
 @media (max-width:800px){#lb{grid-template-columns:1fr;grid-template-rows:55vh 1fr}}
 @media (prefers-reduced-motion: reduce){button,figure,#lb{transition:none!important}#lbimg img{animation:none!important}}`;
+
+  const THEME_MAP = {
+    bg: '--sv-bg',
+    surface: '--sv-surface',
+    hint: '--sv-hint',
+    text: '--sv-text',
+    muted: '--sv-muted',
+    border: '--sv-border',
+    'border-soft': '--sv-border-soft',
+    accent: '--sv-accent',
+    'accent-text': '--sv-accent-text',
+    hover: '--sv-hover',
+    danger: '--sv-danger',
+    scroll: '--sv-scroll',
+    shadow: '--sv-shadow',
+    font: '--sv-font',
+  };
+
+  function readViewerTheme() {
+    const rootStyle = getComputedStyle(document.documentElement);
+    const vars = [];
+    for (const [key, target] of Object.entries(THEME_MAP)) {
+      const value = rootStyle.getPropertyValue(`--nai-popup-${key}`).trim();
+      if (value) vars.push(`${target}:${value}`);
+    }
+    const popupEl = document.querySelector('.autocomplete-container');
+    let mode = popupEl && popupEl.dataset.naiTheme;
+    if (mode !== 'light' && mode !== 'dark') {
+      const raw = rootStyle.getPropertyValue('--nai-popup-bg').trim()
+        || getComputedStyle(document.body).backgroundColor
+        || '';
+      const nums = raw.match(/[\d.]+/g);
+      if (nums && nums.length >= 3) {
+        const [r, g, b] = nums.map(Number);
+        mode = (0.2126 * r + 0.7152 * g + 0.0722 * b) > 140 ? 'light' : 'dark';
+      } else {
+        mode = 'dark';
+      }
+    }
+    vars.push(`color-scheme:${mode}`);
+    return vars.join(';');
+  }
 
   const dec = (u8) => new TextDecoder().decode(u8);
   const pad = (n) => String(n).padStart(2, '0');
   const first = (...xs) => xs.find((x) => x !== undefined && x !== null && x !== '' && x !== '<Undefined>');
+
+  function prettyModel(value) {
+    const raw = String(value || '');
+    if (!raw) return '';
+    const lower = raw.toLowerCase();
+    let label = raw;
+    if (/v5.*turbo/.test(lower)) label = 'NovelAI Diffusion V5 完整 Turbo';
+    else if (/v5.*full/.test(lower)) label = 'NovelAI Diffusion V5 完整';
+    else if (/v5.*curated/.test(lower)) label = 'NovelAI Diffusion V5 精选';
+    else if (/v4[.]?5.*full/.test(lower)) label = 'NovelAI Diffusion V4.5 完整';
+    else if (/v4[.]?5.*curated/.test(lower)) label = 'NovelAI Diffusion V4.5 精选';
+    else if (/v4.*full/.test(lower)) label = 'NovelAI Diffusion V4 完整';
+    else if (/v4.*curated/.test(lower)) label = 'NovelAI Diffusion V4 精选';
+    else if (/v3.*(full|furry)/.test(lower)) label = 'NovelAI Diffusion V3 兽人';
+    else if (/v3/.test(lower)) label = 'NovelAI Diffusion V3 动漫';
+    return label === raw ? raw : `${label} (${raw})`;
+  }
 
   function toDate(v) {
     if (v instanceof Date) return v;
@@ -42,7 +115,6 @@ footer{padding:10px 14px;color:#778;font-size:12px}
   }
   const fmtTime = (d) => d ? `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}` : '';
 
-  // NovelAI 会把请求参数以 JSON 形式写入 PNG 的 tEXt "Comment" 块，位置在 IDAT 之前。
   async function pngComment(blob) {
     if (!blob) return null;
     const u8 = new Uint8Array(await blob.slice(0, 65536).arrayBuffer());
@@ -78,11 +150,12 @@ footer{padding:10px 14px;color:#778;font-size:12px}
           : (pp.characterPrompts || []).map((c) => c && c.prompt).filter(Boolean);
         let url = '';
         if (blob) { url = URL.createObjectURL(blob); urls.push(url); }
+        const modelRaw = first(p.model) || '';
         items.push({
-          iid, url, time: toDate(im.genDateTime),
+          iid, url, time: toDate(im.genDateTime), modelLabel: prettyModel(modelRaw),
           thumb: typeof im.thumbnail === 'string' && im.thumbnail.startsWith('data:image/') ? im.thumbnail : '',
           prompt: first(m && m.prompt, p.prompt) || '', negative: first(m && m.uc, p.negPrompt, pp.uc) || '', chars,
-          seed: first(m && m.seed, p.seed) ?? '', model: first(p.model) || '',
+          seed: first(m && m.seed, p.seed) ?? '', model: modelRaw,
           steps: first(m && m.steps, pp.steps) ?? '', scale: first(m && m.scale, pp.scale) ?? '',
           sampler: first(m && m.sampler, pp.sampler) || '', noise: first(m && m.noise_schedule, pp.noise_schedule) || '',
           width: first(im.width, m && m.width, pp.width) || '', height: first(im.height, m && m.height, pp.height) || '',
@@ -93,6 +166,11 @@ footer{padding:10px 14px;color:#778;font-size:12px}
     items.forEach((it, i) => { it.no = i + 1; });
     return items;
   }
+
+  const sessionName = (name) => {
+    const raw = String(name || 'History').replace(/\s*\((副本|导入)\)$/, '（$1）');
+    return raw === 'History' ? '历史记录' : raw.replace(/^History\b/, '历史记录');
+  };
 
   async function open(w, data) {
     const d = w.document;
@@ -105,8 +183,9 @@ footer{padding:10px 14px;color:#778;font-size:12px}
       return e;
     };
     d.head.textContent = ''; d.body.textContent = '';
-    d.head.append(el('meta', { charset: 'utf-8' }), el('style', { textContent: CSS }));
-    d.title = `${data.meta.name || 'History'} 列表（${items.length} 张）`;
+    d.head.append(el('meta', { charset: 'utf-8' }), el('style', { textContent: CSS + `\n:root{${readViewerTheme()}}` }));
+    const sessionTitle = sessionName(data.meta.name);
+    d.title = `${sessionTitle} 列表（${items.length} 张）`;
 
     const grid = el('div', { id: 'grid' });
     const search = el('input', { type: 'search', placeholder: '按提示词、种子筛选', size: 24 });
@@ -114,7 +193,7 @@ footer{padding:10px 14px;color:#778;font-size:12px}
     const sort = el('select', {}, el('option', { value: 'asc', text: '由旧到新' }), el('option', { value: 'desc', text: '由新到旧' }));
     const count = el('span', { text: `${items.length} 张` });
     d.body.append(
-      el('header', {}, el('h1', { text: `${data.meta.name || 'History'} — ${fmtTime(toDate(data.meta.lastSavedAt))}` }), search, sort, sizeIn, count),
+      el('header', {}, el('h1', { text: `${sessionTitle} — ${fmtTime(toDate(data.meta.lastSavedAt))}` }), search, sort, sizeIn, count),
       grid,
       el('footer', { text: '本标签页中的图像只有在原 NovelAI 标签页保持打开时才能显示。关闭或重新加载原标签页后，这些图像将无法显示。' }),
     );
@@ -131,7 +210,6 @@ footer{padding:10px 14px;color:#778;font-size:12px}
     });
     grid.append(...cards);
 
-    // ---- 灯箱（放大查看）----
     const lbImg = el('img'); const nav = (id, t, dir) => { const b = el('button', { id, className: 'nav', text: t, title: dir < 0 ? '上一张 (←)' : '下一张 (→)' }); b.addEventListener('click', (e) => { e.stopPropagation(); step(dir); }); return b; };
     const lbWrap = el('div', { id: 'lbimg' }, nav('lbprev', '◀', -1), lbImg, nav('lbnext', '▶', 1));
     const info = el('div', { id: 'info' });
@@ -159,7 +237,7 @@ footer{padding:10px 14px;color:#778;font-size:12px}
       info.textContent = '';
       info.append(
         el('div', { className: 'sec' }, el('b', { text: `#${it.no} / ${items.length}` }),
-          el('pre', { text: `${fmtTime(it.time)}\n${it.model}\n${it.width}×${it.height}  步数 ${it.steps}  缩放 ${it.scale}\n${it.sampler} ${it.noise}\nseed ${it.seed}\n${it.iid}${it.url ? '' : '\n（无原图：显示缩略图）'}` })),
+          el('pre', { text: `${fmtTime(it.time)}\n${it.modelLabel || it.model}\n${it.width}×${it.height}  步数 ${it.steps}  缩放 ${it.scale}\n${it.sampler} ${it.noise}\nseed ${it.seed}\n${it.iid}${it.url ? '' : '\n（无原图：显示缩略图）'}` })),
         section('提示词', it.prompt),
         ...it.chars.map((c, k) => section(`角色${k + 1}`, c)),
         section('负面提示词', it.negative),
@@ -189,12 +267,11 @@ footer{padding:10px 14px;color:#778;font-size:12px}
       grid.append(...list);
     });
 
-    // 查看器标签页关闭后释放 blob URL。
     const timer = setInterval(() => {
       if (w.closed) { clearInterval(timer); urls.forEach((u) => URL.revokeObjectURL(u)); }
     }, 3000);
     return items.length;
   }
 
-  return { open, _pngComment: pngComment };
+  return { open };
 })();

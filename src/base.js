@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const NAI_ZH_CSS = "html[data-nai-zh] button,\nhtml[data-nai-zh] [role='button'],\nhtml[data-nai-zh] [role='menuitem'],\nhtml[data-nai-zh] a {\n  line-height: 1.5 !important;\n  overflow: visible !important;\n}\n\nhtml[data-nai-zh] .ProseMirror,\nhtml[data-nai-zh] [contenteditable='true'] {\n  font-family: inherit;\n}\n";
+  const NAI_ZH_CSS = "html[data-nai-zh] button,\nhtml[data-nai-zh] [role='button'],\nhtml[data-nai-zh] [role='menuitem'],\nhtml[data-nai-zh] a {\n  line-height: 1.5;\n  overflow: visible;\n}\n\nhtml[data-nai-zh] .ProseMirror,\nhtml[data-nai-zh] [contenteditable='true'] {\n  font-family: inherit;\n}\n";
 const NAI_ZH_STORAGE_KEY = 'novelai-zh-enabled';
 
 function naiZhReadEnabled() {
@@ -42,7 +42,6 @@ function naiZhInjectStyle(css) {
 
 naiZhInjectStyle(NAI_ZH_CSS);
 
-// 提前建立标签接口的 DNS/TLS 连接，减少第一次输入的握手时间。
 try {
   for (const host of ['https://danbooru.donmai.us', 'https://gelbooru.com']) {
     const preconnect = document.createElement('link');
@@ -54,8 +53,6 @@ try {
 } catch (_) { }
 
 const NAI_ZH_FIX_CSS = `
-/* 标题/普通文本被裁切时放开行高与溢出。 */
-html[data-nai-zh] [data-nai-zh-text],
 html[data-nai-zh] h1,
 html[data-nai-zh] h2,
 html[data-nai-zh] h3,
@@ -69,8 +66,6 @@ html[data-nai-zh] [role='heading'] {
 `;
 naiZhInjectStyle(NAI_ZH_FIX_CSS);
 
-
-// 首轮汉化完成前先遮住页面，避免整页英文先显示、再闪成中文。
 if (naiZhReadEnabled()) {
   try { document.documentElement.classList.add('nai-zh-booting'); } catch (_) { }
   naiZhInjectStyle('html.nai-zh-booting body{visibility:hidden!important}');
@@ -82,8 +77,6 @@ if (naiZhReadEnabled()) {
   }, 3000);
 }
 
-
-/* 内置界面汉化词条 */
 globalThis.NAI_ZH_DICT = Object.freeze({
   "To activate the free trial, please verify your email.": "请先验证邮箱，以激活免费试用。",
   "IP Limit Reached": "已达到 IP 限制",
@@ -92,7 +85,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "The paint’s run dry.": "颜料用完了。",
   "You need a subscription to continue.\nCompare and pick the right plan for you.": "你需要订阅才能继续。\n比较并选择适合你的方案。",
   "You need a subscription or to purchase Anlas to continue.\nCompare and pick the right plan for you.": "你需要订阅或购买 Anlas 才能继续。\n比较并选择适合你的方案。",
-  "Take me to the Pricing": "带我去价格页面",
+  "Take me to the Pricing": "前往定价页面",
   "Subscribe": "订阅",
   "Purchase Anlas": "购买 Anlas",
   "No thanks.": "不用了，谢谢。",
@@ -106,7 +99,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Free Trial": "免费试用",
   " includes:": " 包含：",
   "30 free high quality image generations": "30 次免费高质量图像生成",
-  "Full access to our latest model": "完整使用权：我们最新的模型",
+  "Full access to our latest model": "完整使用我们最新的模型",
   "No credit card required": "无需信用卡",
   "Start Free Trial": "开始免费试用",
   "Tier": "会员等级",
@@ -243,7 +236,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Import File": "导入文件",
   "[0]/[1] text generations remaining.": "剩余 [0]/[1] 次文本生成。",
   "You're getting [0] tokens of AI context. Equivalent to our [1].": "你将获得 [0] 个 token 的 AI 上下文，相当于我们的 [1]。",
-  "Scroll tier": "Scroll 等级",
+  "Scroll tier": "Scroll 套餐",
   "Seen enough?": "看够了吗？",
   "Check out our plans": "查看我们的方案",
   "Create an account": "创建账户",
@@ -258,6 +251,17 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Text Generation": "文本生成",
   "AI Module Training": "AI 模块训练",
   "Tokenizer": "分词器",
+  "GLM Tokenizer": "GLM 分词器",
+  "Before your text is sent to the AI, it gets turned into numbers in a process called tokenization. These tokens are how the AI reads and interprets text.": "在文本发送给 AI 之前，会通过名为“分词”的过程转换成数字。AI 通过这些 token 来读取和理解文本。",
+  "The average token is around 4 characters long, but many common words are their own token.": "平均每个 token 约 4 个字符长，但许多常见单词本身就是独立 token。",
+  "The tokenizer for your currently selected model is the": "当前所选模型使用的分词器是",
+  "Text Input": "文本输入",
+  "ID Input": "ID 输入",
+  "Type something here and the tokenized version will be shown below.": "在此输入内容，分词结果将显示在下方。",
+  "Text": "文本",
+  "Token IDs": "Token ID",
+  "Tokens:": "Token 数：",
+  "Characters:": "字符数：",
   "Interactive Tutorials": "交互式教程",
   "Tutorial": "教程",
   "Tips": "提示",
@@ -273,6 +277,30 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Sketch": "草图",
   "Colorize": "上色",
   "Emotion": "表情",
+  "Neutral": "平淡",
+  "Happy": "开心",
+  "Sad": "难过",
+  "Angry": "生气",
+  "Scared": "害怕",
+  "Surprised": "惊讶",
+  "Tired": "疲惫",
+  "Excited": "兴奋",
+  "Nervous": "紧张",
+  "Thinking": "思考",
+  "Confused": "困惑",
+  "Shy": "害羞",
+  "Disgusted": "厌恶",
+  "Smug": "得意",
+  "Bored": "无聊",
+  "Laughing": "大笑",
+  "Irritated": "烦躁",
+  "Aroused": "动情",
+  "Embarrassed": "尴尬",
+  "Worried": "担心",
+  "Love": "爱意",
+  "Determined": "坚定",
+  "Hurt": "心痛",
+  "Playful": "调皮",
   "Upscale": "放大",
   "Pixel Snap": "像素吸附",
   "Remove backgrounds from images, leaving only the characters. ": "移除图像背景，只保留角色。",
@@ -285,14 +313,14 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Clean up AI-generated pixel art.": "清理 AI 生成的像素画。",
   "Prompt (Optional)": "提示词（可选）",
   "Defry": "去脆化",
-  "Palettize": "调色板",
+  "Palettize": "转换为调色板",
   "Off": "关",
   "Auto": "自动",
   "Custom": "自定义",
   "Colors": "颜色数",
   "Avoid Over-Refining": "避免过度细化",
   "The detected pixel size is always kept.": "始终保留检测到的像素尺寸。",
-  "A finer pixel size may be used when it matches the image better.": "当更细的像素尺寸更贴合图像时，可能会采用它。",
+  "A finer pixel size may be used when it matches the image better.": "若更细的像素尺寸更贴合图像，则可能会采用该尺寸。",
   "The result is scaled back up to roughly the input size.": "结果会被缩放回接近输入图像的大小。",
   "The result is kept at its snapped pixel size.": "结果保持吸附后的像素尺寸。",
   "Pixel Snap is not supported in this browser.": "此浏览器不支持像素吸附。",
@@ -343,14 +371,14 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Learn more": "了解更多",
   "View Terms": "查看条款",
   "Get Started": "开始使用",
-  "Repeat Email": "重复邮箱",
-  "Repeat Password": "重复密码",
+  "Repeat Email": "确认邮箱",
+  "Repeat Password": "确认密码",
   "Email cannot be empty": "邮箱不能为空",
   "Email and Password cannot be empty": "邮箱和密码不能为空",
   "Remember me": "记住我",
   "Login is remembered for 30 days": "在 30 天内保持登录",
   "Login will not be remembered": "不保持登录",
-  "Please take good care of your login credentials. Due to local encryption, losing your email or password results in permanently losing access to your remotely stored stories.": "请妥善保管登录凭据。由于本地加密，丢失邮箱或密码将永久失去远程存储的故事。",
+  "Please take good care of your login credentials. Due to local encryption, losing your email or password results in permanently losing access to your remotely stored stories.": "请妥善保管登录凭据。由于内容在本地加密，一旦丢失邮箱或密码，你将永久无法访问远程存储的故事。",
   "This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply": "本站受 reCAPTCHA 保护，并适用 Google 隐私政策与服务条款。",
   "By registering, you agree to consent to the NovelAI ": "注册即表示你同意 NovelAI 的 ",
   "Privacy Policy": "隐私政策",
@@ -369,7 +397,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Resend email": "重新发送邮件",
   "Check your inbox to verify your email. Or, copy and paste the code that was sent below.": "请查看收件箱以验证邮箱，或在下方粘贴收到的验证码。",
   "Passwords do not match": "两次输入的密码不一致",
-  "Email must be in email format": "请输入有效的邮箱格式",
+  "Email must be in email format": "邮箱格式不正确",
   "Password must be 8 characters or more": "密码至少需要 8 个字符",
   "Account already exists.": "账户已存在。",
   "Hide or Expand Gift Key Input": "隐藏或展开礼品码输入框",
@@ -432,16 +460,16 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Base Prompt": "基础提示词",
   "Write what you want removed from the generation.": "填写你希望从生成结果中排除的内容。",
   "Write your prompt here. Use tags to sculpt your outputs.": "在此输入提示词，用标签塑造画面。",
-  "Low Quality + Bad Anatomy": "低质量 + 不良人体",
+  "Low Quality + Bad Anatomy": "低质量 + 人体结构错误",
   "Low Quality": "低质量",
   "Light": "轻度",
   "Heavy": "重度",
-  "Test UC": "测试负面",
+  "Test UC": "测试负面提示词",
   "Dummy": "占位",
   "Heavy+DeAI": "重度 + 去 AI",
   "Human Focus": "人物侧重",
   "Furry Focus": "兽人侧重",
-  "Bad Anatomy": "不良人体",
+  "Bad Anatomy": "人体结构错误",
   "None": "无",
   "Add Quality Tags": "添加质量标签",
   "The prompt will be used unmodified.": "提示词将保持原样使用。",
@@ -462,7 +490,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Medium effort generations cost fewer Anlas and use less of your Opus Usage Limit. Some settings are unavailable on medium effort.": "中档位生成消耗的 Anlas 更少，占用的 Opus 使用额度也更低；部分设置在中档位下不可用。",
   "Random": "随机",
   "History": "历史记录",
-  "Ctrl+Click on an image to set your settings to the ones used to generate it (except for any init image).": "按住 Ctrl 点击图像，可将当前设置切换为该图生成时使用的设置（初始图像除外）。",
+  "Ctrl+Click on an image to set your settings to the ones used to generate it (except for any init image).": "按住 Ctrl 点击图像，即可套用该图生成时的设置（初始图像除外）。",
   "One of our original models trained on an expanded dataset. No longer recommended for use.": "我们的早期模型之一，基于扩展数据集训练。现已不再推荐使用。",
   "One of our original models. No longer recommended for use.": "我们的早期模型之一。现已不再推荐使用。",
   "Beta model for furry and other non-human content. No longer recommended for use.": "面向兽人及其他非人类内容的测试模型。现已不再推荐使用。",
@@ -552,12 +580,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Pin Image": "钉住图像",
   "Download Image": "下载图像",
   "Upload to Explore": "上传到探索",
-  "Copy to Seed": "复制到种子",
+  "Copy to Seed": "将种子填入设置",
   "Detach Undesired Content": "分离负面提示词",
   "Reattach Undesired Content": "重新附加负面提示词",
   "Prompt Chunks": "提示词片段",
   "Reset Settings": "重置设置",
-  "Remove Pinned Image": "取消钉住图像",
+  "Remove Pinned Image": "取消固定图像",
   "Go to Image": "转到图像",
   "OLD": "旧",
   "NEW": "新",
@@ -591,7 +619,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Images will not automatically download after generation.": "生成完成后不会自动下载图像。",
   "These settings would take too long to generate.": "当前设置生成所需时间过长。",
   "Image": "图像",
-  "Change the image, keep the vision.": "改变图像，保留感觉。",
+  "Change the image, keep the vision.": "改变画面，保留氛围。",
   "Information Extracted": "已提取信息",
   "Vibe Transfer is not supported for this model.": "当前模型不支持氛围转移。",
   "Made with NAI Diffusion V5": "由 NAI Diffusion V5 生成",
@@ -643,7 +671,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "To enjoy our other image generation models you are required to update your subscription with our new payment processor.": "若要继续使用我们的其他图像生成模型，你需要通过新的支付服务商更新订阅。",
   "We are sunsetting our current payment provider as they are no longer supporting generative AI products (": "我们正在停用当前的支付服务商，因为他们不再支持生成式 AI 产品（",
   "Learn more here": "在此了解更多",
-  "). Users who do not manually update their billing info will eventually be switched to our new payment processor at a later date. However, for users who manually update their billing info now, we will credit ": "）。未手动更新账单信息的用户最终会在之后被切换到新的支付服务商。不过，如果用户现在手动更新账单信息，我们将赠送 ",
+  "). Users who do not manually update their billing info will eventually be switched to our new payment processor at a later date. However, for users who manually update their billing info now, we will credit ": "）。未手动更新账单信息的用户后续会被切换到新的支付服务商。不过，如果用户现在手动更新账单信息，我们将赠送 ",
   "bonus Anlas": "额外 Anlas",
   " as a Thank You.": " 作为感谢。",
   "You will be awarded 5000 Anlas if you use a credit card, and 2000 Anlas if you use PayPal.": "使用信用卡支付可获得 5000 Anlas，使用 PayPal 支付可获得 2000 Anlas。",
@@ -658,7 +686,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "click here": "请点击这里",
   "No Migration Needed": "无需迁移",
   "You do not have a renewing Paddle subscription and do not need to migrate.": "你没有正在续订的 Paddle 订阅，无需迁移。",
-  "Some card providers (Discover) card processing currently doesn’t work. We’re actively working on a fix.": "部分卡组织（Discover）的银行卡目前无法完成支付，我们正在积极修复。",
+  "Some card providers (Discover) card processing currently doesn’t work. We’re actively working on a fix.": "部分发卡机构（如 Discover）目前无法处理支付，我们正在积极修复。",
   "Minimum Context Area": "最小上下文区域",
   "Your browser is interfering with canvas api functionality in a way that prevents us from scaling images properly.\nImages may appear blurry or otherwise not as intended.\nUsing a different browser or disabling these features when using NovelAI is recommended.": "你的浏览器正在干扰 Canvas API 的功能，导致我们无法正确缩放图像。\n图像可能显得模糊或不符合预期。\n建议换用其他浏览器，或在访问 NovelAI 时关闭相关隐私保护功能。",
   "Legacy Prompt Conditioning Mode (Not Recommended)": "旧版提示词条件模式（不推荐）",
@@ -740,6 +768,60 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Style": "风格",
   "Costume": "服装",
   "Character & Style": "角色与风格",
+  "Outfit": "服装",
+  "Outfit Reference": "服装参考",
+  "Character Reference": "角色参考",
+  "Style Reference": "风格参考",
+  "Character & Style Reference": "角色与风格参考",
+  "Add a reference image for a character, style, or outfit.": "为角色、风格或服装添加参考图。",
+  "Choose what the model should take from the reference.": "选择模型应从参考图中借鉴的内容。",
+  "Reference Type": "参考类型",
+  "Add Reference": "添加参考图",
+  "Add a Reference": "添加参考图",
+  "Remove Reference": "移除参考图",
+  "Prefer same outfit": "优先沿用参考服装",
+  "Each Precise Reference costs [0] Anlas per generated image.": "每张精确参考图都会让每次生成额外消耗 [0] Anlas。",
+  "Using Precise Reference adds [0] Anlas per reference image to every generation.": "使用精确参考时，每张参考图会让每次生成额外消耗 [0] Anlas。",
+  "Precise Reference is only available on V4.5 and V5 models.": "精确参考仅适用于 V4.5 和 V5 模型。",
+  "Precise Reference is not available on this model.": "当前模型不支持精确参考。",
+  "Outfit Reference is only available on V5.": "服装参考仅适用于 V5 模型。",
+  "Prefer same outfit is only available on V5.": "“优先沿用参考服装”仅适用于 V5 模型。",
+  "Fidelity is only available on V4.5.": "保真度滑块仅适用于 V4.5 模型。",
+  "The Fidelity slider has been removed on V5. Strength is the only slider that controls how closely the generation follows your reference.": "V5 已移除保真度滑块，现在仅由强度滑块控制生成结果与参考图的接近程度。",
+  "Inpainting with Precise References is not yet supported on V5.": "V5 尚不支持在局部重绘中使用精确参考。",
+  "Vibe Transfer is incompatible with Precise Reference.": "氛围转移与精确参考不能同时使用。",
+  "Multiple character references will be blended together.": "多张角色参考图会融合在一起。",
+  "Strength controls how strongly the AI emulates the reference image.": "强度用于控制 AI 模仿参考图的程度。",
+  "Lower values give the AI more creative freedom.": "数值越低，AI 的发挥空间越大。",
+  "Higher values hold the generation closer to your reference image.": "数值越高，生成结果越接近参考图。",
+  "In V5 the Strength slider goes up to 5.0.": "在 V5 中，强度滑块最高可调节到 5.0。",
+  "Click the number to enter a negative Strength value.": "点击数字可输入负的强度值。",
+  "Style Reference often works best with Strength set fairly high.": "风格参考通常把强度设得较高时效果更好。",
+  "Base prompt": "基础提示词",
+  "Character prompts": "角色提示词",
+  "Name your character": "为角色命名",
+  "Character Positioning": "角色定位",
+  "Show grid": "显示网格",
+  "Grid lines": "网格线",
+  "Prop open": "固定展开",
+  "Multiple pinned images": "多张固定图像",
+  "Pin more than one image at a time.": "可以同时钉住多张图像。",
+  "Max✨": "最高画质✨",
+  "Enhance": "增强",
+  "Upscale": "放大",
+  "Alpha Transparency": "Alpha 透明",
+  "Comic Generation": "漫画生成",
+  "Full multi-panel pages": "完整多分镜页面",
+  "Text:": "文字：",
+  "Quote text to let the frontend prepare the Text block automatically.": "用引号包裹文字，前端会自动生成 Text 区块。",
+  "Fill tool": "填充工具",
+  "Blur tool": "模糊工具",
+  "Clone stamp tool": "仿制图章工具",
+  "Lasso tool": "套索工具",
+  "Import 3D Model": "导入 3D 模型",
+  "3D Model": "3D 模型",
+  "Pose 3D Model": "摆放 3D 模型",
+  "Mask Border": "蒙版边框",
   "Delta": "差异",
   "Style Aware": "风格感知",
   "Load a previous session?": "加载之前的会话？",
@@ -861,12 +943,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Never Mind": "算了",
   "Download Selected as ZIP": "将所选内容下载为 ZIP",
   "Download Selected Images?": "下载所选图像？",
-  "This will download the [0] selected generation(s) as a ZIP file.": "这将把选中的 [0] 次生成下载为 ZIP 文件。",
+  "This will download the [0] selected generation(s) as a ZIP file.": "将把选中的 [0] 次生成打包为 ZIP 文件下载。",
   "Delete this image?": "要删除这张图像吗？",
   "Delete it!": "删除！",
   "No, keep it!": "不，保留！",
   "Delete?": "删除？",
-  "Downloading [0] images in [1] zip files...": "正在将 [0] 张图像下载到 [1] 个 ZIP 文件中…",
+  "Downloading [0] images in [1] zip files...": "正在将 [0] 张图像打包为 [1] 个 ZIP 文件下载…",
   "Images downloaded": "图像已下载",
   "Pins": "钉图板",
   "Add note": "添加便签",
@@ -977,6 +1059,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Purchased": "已购买",
   "Text To Speech": "文本转语音",
   "Defaults": "默认值",
+  "Default": "默认",
   "Hotkeys": "快捷键",
   "Support": "支持",
   "Change Log": "更新日志",
@@ -1013,7 +1096,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Are you sure you want to overwrite it?": "确定要覆盖它吗？",
   "You need to enter your existing email and password.": "你需要输入当前邮箱和密码。",
   "You need to enter a new email or a new password.": "你需要输入新邮箱或新密码。",
-  "Email must be in email format.": "邮箱必须符合邮箱格式。",
+  "Email must be in email format.": "邮箱格式不正确。",
   "Password must be 8 characters or more.": "密码至少需要 8 个字符。",
   "Passwords do not match.": "两次输入的密码不一致。",
   "Failed to change details.": "更改账户信息失败。",
@@ -1042,6 +1125,49 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Export Theme File": "导出主题文件",
   "Default Themes": "默认主题",
   "Theme Editor": "主题编辑器",
+  "Header": "标题",
+  "Paragraph": "正文",
+  "Warning/Error": "警告 / 错误",
+  "Foreground": "前景",
+  "Background": "背景",
+  "Dark Background": "深色背景",
+  "Input Background": "输入框背景",
+  "Header Font": "标题字体",
+  "Paragraph Font": "正文字体",
+  "Low Intensity Color": "低强度颜色",
+  "Mid Intensity Color": "中强度颜色",
+  "High Intensity Color": "高强度颜色",
+  "NovelAI Dark": "NovelAI 深色",
+  "NovelAI Light": "NovelAI 浅色",
+  "Slate": "石板灰",
+  "Midnight Doll": "午夜人偶",
+  "Subtle Terminal": "低调终端",
+  "Ink": "墨色",
+  "Wine": "酒红",
+  "Vibrowave": "霓虹波",
+  "Sand": "沙色",
+  "Grubbox Dark": "复古暗色",
+  "Gruvbox Dark": "复古暗色",
+  "Gruvbox Light": "复古亮色",
+  "Monkey": "猴子",
+  "Bubblegum": "泡泡糖",
+  "Matrix": "矩阵",
+  "Purple Noir": "紫夜",
+  "Sagiri": "纱雾",
+  "Counter Militant": "反制武装",
+  "Amber": "琥珀",
+  "Frog": "青蛙",
+  "NovelAI Dark (Old)": "NovelAI 深色（旧版）",
+  "NovelAI Dark (Legacy)": "NovelAI 深色（旧版）",
+  "NovelAI Dark (Classic)": "NovelAI 深色（旧版）",
+  "NovelAI Light (Old)": "NovelAI 浅色（旧版）",
+  "NovelAI Light (Legacy)": "NovelAI 浅色（旧版）",
+  "This is paragraph text. Nice!": "这是正文文本。不错！",
+  "This is a prompt.": "这是提示词。",
+  "This is AI text.": "这是 AI 文本。",
+  "This is edited text.": "这是编辑过的文本。",
+  "This is new user text.": "这是新的用户文本。",
+  "This is highlighted text.": "这是高亮文本。",
   "New & imported stories will be saved locally only.": "新建和导入的故事只会保存在本地。",
   "New & imported stories will be saved locally and stored encrypted remotely.": "新建和导入的故事会保存在本地，并加密存储到远程服务器。",
   "Exporting and backing up your stories is highly recommended, should your browser cache get cleared, or if you lose access to your account.": "强烈建议导出并备份故事，以防浏览器缓存被清除或你失去账户访问权限。",
@@ -1091,6 +1217,15 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Debug Story Deletion": "调试：删除故事",
   "Enter a story id and click \"Delete\". Cannot be undone.": "输入故事 ID，然后点击“删除”。此操作无法撤销。",
   "Logprobs Count": "Logprobs 数量",
+  "Debug": "调试",
+  "Max Context Size": "最大上下文长度",
+  "No Limit": "无限制",
+  "Default: No Limit": "默认：无限制",
+  "Note: The actual limit will depend on subscription tier and model. This setting exists to artificially limit the maximum context size.": "注意：实际上限取决于订阅档位和模型。此设置用于人为限制最大上下文长度。",
+  "Use Editor V2 for New Stories": "新故事使用编辑器 V2",
+  "New stories will use the new document editor.": "新故事将使用新的文档编辑器。",
+  "The new document editor supports dynamic loading of sections for increased performance, text formatting, a mobile context menu and additional features. Stories will continue using the editor they were created with.": "新的文档编辑器支持分区动态加载以提升性能、文本格式化、移动端上下文菜单及更多功能。已有故事会继续使用创建时所用的编辑器。",
+  "Using Editor V2 is recommended, as now that it has reached feature parity it will entirely replace Editor V1 at some time in the future.": "建议使用编辑器 V2；它现已具备完整功能，未来会在某个时间完全取代编辑器 V1。",
   "Prevent Module Override": "防止模块覆盖",
   "The selected module will always be used for generation.": "生成时将始终使用所选模块。",
   "The selected module will be overridden in specific situations.": "所选模块会在特定情况下被覆盖。",
@@ -1199,7 +1334,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Lock Output Viewer Camera": "锁定输出视图相机",
   "Panning and zooming the output viewer is disabled.": "禁用输出视图的平移和缩放。",
   "The output viewer can be panned and zoomed.": "输出视图可以平移和缩放。",
-  "Explore Shelf": "探索架",
+  "Explore Shelf": "探索侧栏",
   "Recent images from the Explore gallery are shown to the right of generations.": "在生成结果右侧显示探索画廊中的近期图像。",
   "No Explore gallery images are shown in the output viewer.": "输出视图中不显示探索画廊的图像。",
   "Page Layout": "页面布局",
@@ -1335,7 +1470,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Return to the Quick Start Gallery by clicking the NovelAI Logo in the top left!": "点击左上角的 NovelAI 标志，返回快速入门画廊！",
   "Want to learn more basics of Image Generation?": "想了解更多图像生成基础知识？",
   "Get inspiration from our quick start gallery.": "从快速入门画廊获取灵感。",
-  "We’ve got a handy starter Tutorial Video for you!": "我们为你准备了一个方便的入门教程视频！",
+  "We’ve got a handy starter Tutorial Video for you!": "我们为你准备了一段实用的入门教程视频！",
   "You can find these handy resources at any time under the Hamburger menu": "你随时可以在汉堡菜单下找到这些实用资源",
   "See the little circle next to each tag? This shows how well the AI": "看到每个标签旁边的小圆圈了吗？它表示 AI 对该标签的",
   "This works well for things like make-up that can sometimes turn out a little too extreme.": "对于妆容等有时会过于夸张的元素，这种方法很有效。",
@@ -1399,10 +1534,10 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "You need a subscription to do this!": "你需要订阅才能执行此操作！",
   "You are not subscribed!": "你还没有订阅！",
   "Upgrade your subscription?": "升级你的订阅？",
-  "Take me there": "带我去",
+  "Take me there": "前往",
   "No, take me back!": "不，返回",
   "You are subscribed to the [0] tier!": "你订阅的是 [0] 套餐！",
-  "Your subscription renews around [0].": "你的订阅大约在 [0] 续费。",
+  "Your subscription renews around [0].": "你的订阅续费时间大约为 [0]。",
   "Your subscription is currently classified as high risk by our payment provider, this can take up to a day to clear up.": "你的订阅目前被支付服务商标记为高风险，通常最多需要一天才能解除。",
   "Unsubscribe": "取消订阅",
   "Reactivate Subscription": "重新激活订阅",
@@ -1431,7 +1566,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "purchase the following?": "购买以下内容？",
   "Purchased Successful!\nIt may take up to 30+ minutes to for the Anlas to be credited to your account. If it takes longer than expected please contact us at support@novelai.net": "购买成功！\nAnlas 最多可能需要 30 分钟以上才会到账；如果超过预期时间，请联系 support@novelai.net。",
   "Here you can purchase additional Anlas for Image Generation.": "你可以在这里购买额外 Anlas 用于图像生成。",
-  "Subscription Anlas will be refilled according to your subscription every month.": "订阅 Anlas 会按照你的订阅每月补充。",
+  "Subscription Anlas will be refilled according to your subscription every month.": "订阅 Anlas 每月会根据你的套餐补充。",
   "*The discounted Anlas pricing does not apply to accounts with canceled or non-renewing subscriptions.": "*折扣 Anlas 价格不适用于已取消或不会续订的订阅账户。",
   "Your subscription transaction is marked as high-risk with our payment provider. You won't be able to purchase Anlas until this status is cleared, which usually happens within 24 hours.": "你的订阅交易被支付服务商标记为高风险；在该状态解除前无法购买 Anlas，通常会在 24 小时内解除。",
   "You're signed up to our newsletter.": "你已订阅我们的新闻邮件。",
@@ -1442,10 +1577,10 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Tablet Tier": "Tablet 套餐",
   "View Invoices": "查看发票",
   "Update Payment Details": "更新支付详情",
-  "Your subscription renews around": "你的订阅续费时间：",
+  "Your subscription renews around": "你的订阅续费时间大约为",
   "Your subscription renews on": "你的订阅续费时间：",
   "Your subscription will renew on": "你的订阅将于",
-  "Your subscription renews in": "你的订阅续费时间：",
+  "Your subscription renews in": "你的订阅续费还剩",
   "Your subscription ends on": "你的订阅到期时间：",
   "Your subscription expired on": "你的订阅过期时间：",
   "Renews on": "续费日期：",
@@ -1491,19 +1626,19 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Unlimited": "无限",
   "Unlimited Text Generations": "无限文本生成",
   "Free Text Generations": "免费文本生成",
-  "Unlimited** normal and small sized generations.": "无限**普通和小尺寸生成。",
+  "Unlimited** normal and small sized generations.": "普通和小尺寸图像的生成次数不限**。",
   "Access to our advanced image generation models.": "可使用我们先进的图像生成模型。",
   "Access to new Experimental Features": "可使用新的实验性功能",
   "You’ll get access to the latest and coolest new stuff before everyone else.": "你会比其他用户更早体验最新、最酷的功能。",
-  "Access to Clio, our smaller but fastest proof of concept AI Storyteller.": "可使用 Clio，我们更小但速度最快的概念验证 AI 故事生成器。",
+  "Access to Clio, our smaller but fastest proof of concept AI Storyteller.": "可使用 Clio，我们体积更小但速度最快的概念验证型 AI 故事讲述器。",
   "Access to Kayra, our top of the line AI Storyteller.": "可使用 Kayra，我们顶级的 AI 故事生成器。",
   "Including all our other AI Storytellers": "包含我们所有其他 AI 故事生成器",
-  "Bring your stories to life with the soothing sound of our generated Text-to-Speech voices.": "用生成的舒缓语音为你的故事赋予生命。",
+  "Bring your stories to life with the soothing sound of our generated Text-to-Speech voices.": "用我们生成的舒缓语音，让你的故事栩栩如生。",
   "100 Free TTS Generations": "100 次免费 TTS 生成",
   "TTS Generations": "TTS 生成",
   "Characters of Memory": "记忆字符数",
   "The number of characters the AI can remember. (~4 characters = 1 token)": "AI 可记住的字符数。（约 4 个字符 = 1 个 token）",
-  "That’s about ~[0] characters that the AI can remember.": "大约相当于 AI 可记住的 ~[0] 个字符。",
+  "That’s about ~[0] characters that the AI can remember.": "也就是 AI 大约能记住 ~[0] 个字符。",
   "Currency for Image Generations, refilled every month.": "用于图像生成的货币，每月补充。",
   "SOTA image model capable of generating Anime imagery": "可生成动漫图像的 SOTA 图像模型",
   "SOTA image model capable of generating Furry imagery": "可生成兽人图像的 SOTA 图像模型",
@@ -1547,15 +1682,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   "Encoding required. This will cost [0] on the next generation.": "需要编码。下次生成将消耗 [0]。",
 });
 
-
-/* NovelAI 简体中文汉化 — 页面翻译引擎
- *
- * 设计原则：
- *  1. 只替换“完整文本节点/属性值”的精确匹配，绝不对提示词做分词或子串替换；
- *  2. 明确保护 ProseMirror、contenteditable、textarea、input 以及标签建议浮层；
- *  3. 使用 MutationObserver 跟随 React 重渲染，切换语言时可完整还原；
- *  4. 不注入页面主世界的脚本，不拦截网络请求，不上传任何数据。
- */
 (() => {
   'use strict';
 
@@ -1588,7 +1714,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     'TITLE',
   ]);
 
-  // 这些区域里可能是用户输入/提示词标签，绝不翻译其中的文本。
   const PROTECTED_SELECTOR = [
     'textarea',
     'input',
@@ -1603,14 +1728,11 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     '.notranslate',
     '[translate="no"]',
     '[data-nai-zh-skip]',
-    // 提示词增强脚本的联想浮层：标签名、候选词和右键菜单不能被汉化引擎改写。
     '.autocomplete-container',
     '.tag-context-menu',
     '.suggestion-item',
-    '.suggestion-text',
   ].join(',');
 
-  // 标签建议、自动补全、提示词编辑器等浮动层也可能不在 contenteditable 内。
   const PROTECTED_CLASS_RE =
     /(?:^|[\s_-])(?:tag[-_]?suggest(?:ion)?s?|tag[-_]?list|autocomplete|prompt[-_]?(?:text|value|display|content|body)|token[-_]?(?:editor|list)|prosemirror|monaco|cm[-_]editor)(?:$|[\s_-])/i;
 
@@ -1625,7 +1747,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
       .replace(/\s+/g, ' ')
       .trim();
 
-  // 逐条构造英文 -> 中文索引；同时容忍排版差异（空格、弯引号等）。
   const EXACT = new Map();
   for (const [english, chinese] of Object.entries(DICT)) {
     if (typeof chinese !== 'string' || !chinese || chinese === english) continue;
@@ -1634,12 +1755,35 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     if (!EXACT.has(key)) EXACT.set(key, chinese);
   }
 
+  const LOOKUP_CACHE = new Map();
+  const LOOKUP_CACHE_LIMIT = 4000;
+
   const option = (word) => {
     const key = normalize(word);
     return EXACT.get(key) || word;
   };
 
   const RULES = [
+    [
+      /^(?:Grubbox|Gruvbox)[\s_-]*Dark$/i,
+      () => '复古暗色',
+    ],
+    [
+      /^Default: (.+)$/i,
+      (m) => `默认：${option(m[1])}`,
+    ],
+    [
+      /^(.+) Tokenizer$/i,
+      (m) => `${m[1]} 分词器`,
+    ],
+    [
+      /^The average token is around 4 characters long, but many common words are their own token\. The tokenizer for your currently selected model is the$/i,
+      () => '平均每个 token 约 4 个字符长，但许多常见单词本身就是独立 token。当前所选模型使用的分词器是',
+    ],
+    [
+      /^The average token is around 4 characters long, but many common words are their own token\. The tokenizer for your currently selected model is the (.+)\.$/i,
+      (m) => `平均每个 token 约 4 个字符长，但许多常见单词本身就是独立 token。当前所选模型使用的分词器是 ${m[1].replace(/\s+Tokenizer$/i, ' 分词器')}。`,
+    ],
     [
       /^Image Generation(.*?) - NovelAI$/i,
       (m) => `图像生成${m[1]} - NovelAI`,
@@ -1659,6 +1803,14 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     [
       /^(\d+) Images?$/i,
       (m) => `${m[1]} 张图像`,
+    ],
+    [
+      /^\(([\d,]+) Images?\)$/i,
+      (m) => `（${m[1]} 张图像）`,
+    ],
+    [
+      /^History \(([\d,]+) Images?\)$/i,
+      (m) => `历史记录（${m[1]} 张图像）`,
     ],
     [
       /^(\d+) image \(([^)]+)\)$/i,
@@ -1788,8 +1940,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
       (m) => `到期时间：${m[1]}`,
     ],
     [
+      /^(\d{4})\/(\d{1,2})\/(\d{1,2}) @ (\d{1,2}):(\d{2})(am|pm)\.?$/i,
+      (m) => `${m[1]}/${m[2]}/${m[3]} ${m[4]}:${m[5]}${m[6].toLowerCase()}`,
+    ],
+    [
       /^Your subscription renews around (.+)\.$/i,
-      (m) => `你的订阅大约在 ${m[1]} 续费。`,
+      (m) => `你的订阅续费时间大约为 ${m[1]}。`,
     ],
     [
       /^Your subscription renews on (.+)\.$/i,
@@ -1895,6 +2051,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     observer: null,
     observerRoot: null,
     titleObserver: null,
+    titleNode: null,
     scanTimer: 0,
     originalLang: '',
     pendingRoots: new Set(),
@@ -1985,16 +2142,32 @@ globalThis.NAI_ZH_DICT = Object.freeze({
 
   function lookup(text) {
     const key = normalize(text);
-    if (!key || key.length > 3000 || CJK_RE.test(key)) return null;
-
-    const direct = EXACT.get(key);
-    if (direct) return direct;
-
-    for (const [regex, build] of RULES) {
-      const match = regex.exec(key);
-      if (match) return build(match);
+    if (!key || key.length > 3000) return null;
+    if (CJK_RE.test(key)) {
+      const historyCount = key.match(/^历史记录\s*\(([\d,]+)\s+Images?\)$/i);
+      if (historyCount) return `历史记录（${historyCount[1]} 张图像）`;
+      const copyCount = key.match(/^(?:History|历史记录)\s*\((副本|导入)\)\s*\(([\d,]+)\s+Images?\)$/i);
+      if (copyCount) return `历史记录（${copyCount[1]}）（${copyCount[2]} 张图像）`;
+      const copyName = key.match(/^(?:History|历史记录)\s*\((副本|导入)\)$/i);
+      return copyName ? `历史记录（${copyName[1]}）` : null;
     }
-    return null;
+    if (LOOKUP_CACHE.has(key)) return LOOKUP_CACHE.get(key);
+
+    let result = EXACT.get(key) || null;
+    if (!result) {
+      for (const [regex, build] of RULES) {
+        const match = regex.exec(key);
+        if (match) {
+          result = build(match);
+          break;
+        }
+      }
+    }
+    if (LOOKUP_CACHE.size >= LOOKUP_CACHE_LIMIT) {
+      LOOKUP_CACHE.delete(LOOKUP_CACHE.keys().next().value);
+    }
+    LOOKUP_CACHE.set(key, result);
+    return result;
   }
 
   function keepWhitespace(raw, body) {
@@ -2039,14 +2212,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
   function translateAttribute(el, name) {
     if (!state.enabled || !el || el.nodeType !== ELEMENT_NODE) return false;
     if (isAttributeProtected(el)) return false;
-    // 只处理按钮类 input 的 value，避免改写用户在文本框里输入的内容。
     if (name === 'value') {
       const isButtonInput = el.tagName === 'INPUT' && /^(button|submit|reset)$/i.test(el.type || '');
       if (!isButtonInput) return false;
     }
 
     let raw = el.getAttribute(name);
-    // React 有时只设置 input.value 属性，不写 value attribute。
     if (!raw && name === 'value' && el.tagName === 'INPUT') raw = el.value;
     if (!raw || !raw.trim() || raw.length > 3000) return false;
 
@@ -2100,9 +2271,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     }
     const nonEmpty = textNodes.filter((node) => node.nodeValue.trim());
     if (nonEmpty.length < 2) return false;
-    // 前面的节点可能已经被单独翻译过；用原始文本重新拼出整句再匹配。
     const text = textNodes.map((node) => {
-      // 即使前面的节点已被单独翻译，也优先用记录中的英文原文拼回整句。
       const record = state.records.get(node);
       return record ? record.original : node.nodeValue;
     }).join('');
@@ -2146,7 +2315,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
       translateElementAttributes(node);
     }
 
-    // 开放 Shadow DOM 中的提示条、浮层也一并处理。
     if (node.shadowRoot) scanNode(node.shadowRoot);
 
     for (let child = node.firstChild; child; child = child.nextSibling) {
@@ -2158,8 +2326,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     const text = String(value || '');
     if (!text) return text;
 
-    // NovelAI 会在标签标题前放一个旋转的符号（◰、◳、▣ 等）表示正在生成。
-    // 只翻译后面的英文，保留这个符号。
     const leading = text.match(/^([^\p{L}\p{N}\s]+)(\s*)/u);
     const prefix = leading ? leading[1] + leading[2] : '';
     const body = prefix ? text.slice(prefix.length) : text;
@@ -2192,7 +2358,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
       state.lastChineseTitle = next;
       return withPrefix(next);
     }
-    // 生成期间的未知英文状态标题：保证标签页仍显示中文。
     if (isImagePage() && /[A-Za-z]/.test(body) && !/[\u3400-\u9fff]/.test(body)) {
       return withPrefix(state.lastChineseTitle || 'NovelAI 图像生成');
     }
@@ -2220,6 +2385,98 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     setTimeout(flush, 40);
   }
 
+  let themeLayoutTimer = null;
+  const THEME_EDITOR_LABELS = ['标题', '正文', '警告 / 错误', '警告/错误', '前景', '背景', '深色背景', '输入框背景'];
+
+  function findThemeLabel(scope, text) {
+    if (!scope) return null;
+    return Array.from(scope.querySelectorAll('div,span,label,p')).find(
+      (el) => el.childElementCount === 0 && (el.textContent || '').trim() === text,
+    ) || null;
+  }
+
+  function repairThemeEditorLayout() {
+    if (!state.enabled) return;
+    const heading = Array.from(document.querySelectorAll('div,span,h1,h2,h3')).find(
+      (el) => el.childElementCount === 0 && (el.textContent || '').trim() === '主题编辑器',
+    );
+    if (!heading) return;
+    let scope = heading.parentElement;
+    for (let i = 0; i < 6 && scope; i += 1, scope = scope.parentElement) {
+      const found = THEME_EDITOR_LABELS.filter((text) => findThemeLabel(scope, text)).length;
+      if (found >= 5) break;
+    }
+    if (!scope) return;
+    const labels = THEME_EDITOR_LABELS.map((text) => findThemeLabel(scope, text)).filter(Boolean);
+    if (labels.length < 5) return;
+    let panel = labels[0].parentElement;
+    while (panel && !labels.every((label) => panel.contains(label))) panel = panel.parentElement;
+    if (!panel || panel === document.body || panel === document.documentElement) return;
+    const width = panel.getBoundingClientRect().width;
+    if (width < 40 || width > 320 || panel.dataset.naiThemeLayoutFixed === '1') return;
+    panel.style.minWidth = '420px';
+    panel.style.width = '420px';
+    panel.style.flex = '0 0 420px';
+    panel.dataset.naiThemeLayoutFixed = '1';
+  }
+
+  function repairTokenizerDescription() {
+    const heading = Array.from(document.querySelectorAll('div,span,h1,h2,h3')).find(
+      (el) => el.childElementCount === 0 && (el.textContent || '').trim() === '分词器',
+    );
+    if (!heading) return;
+    let scope = heading.parentElement;
+    for (let i = 0; i < 6 && scope; i += 1, scope = scope.parentElement) {
+      if (scope.querySelector('select')) break;
+    }
+    if (!scope) return;
+    const select = scope.querySelector('select');
+    if (!select || !select.options.length) return;
+    const selected = select.options[select.selectedIndex];
+    if (!selected) return;
+    const rawName = (selected.textContent || '').trim();
+    if (!rawName) return;
+    const name = rawName.replace(/\s+Tokenizer$/i, ' 分词器');
+    const paragraph = Array.from(scope.querySelectorAll('p,div,span')).find((el) => {
+      const text = (el.textContent || '').trim();
+      return text.includes('当前所选模型使用的分词器是') && text.length < 300;
+    });
+    if (!paragraph) return;
+    const next = `当前所选模型使用的分词器是 ${name}。`;
+    if ((paragraph.textContent || '').trim() === next) return;
+    paragraph.textContent = next;
+    if (select.dataset.naiTokenizerSync !== '1') {
+      select.dataset.naiTokenizerSync = '1';
+      select.addEventListener('change', () => setTimeout(repairTokenizerDescription, 0));
+    }
+  }
+
+  function repairUserSettingsTitle() {
+    const title = Array.from(document.querySelectorAll('div,span,h1,h2,h3,strong')).find(
+      (el) => el.childElementCount === 0 && (el.textContent || '').trim() === '用户设置',
+    );
+    if (!title) return;
+    title.style.whiteSpace = 'nowrap';
+    title.style.overflow = 'visible';
+    title.style.textOverflow = 'clip';
+    title.style.maxWidth = 'none';
+    title.style.paddingRight = '2px';
+    const holder = title.parentElement;
+    if (holder && holder.getBoundingClientRect().width < 420) {
+      holder.style.overflow = 'visible';
+    }
+  }
+
+  function scheduleThemeEditorLayoutFix() {
+    if (themeLayoutTimer) clearTimeout(themeLayoutTimer);
+    themeLayoutTimer = setTimeout(() => {
+      themeLayoutTimer = null;
+      try { repairThemeEditorLayout(); } catch (_) { }
+      try { repairTokenizerDescription(); } catch (_) { }
+      try { repairUserSettingsTitle(); } catch (_) { }
+    }, 260);
+  }
+
   function flush() {
     state.flushScheduled = false;
     if (!state.enabled) {
@@ -2235,13 +2492,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
           scanNode(root);
           if (/password|submit/i.test(root.textContent || '')) forceKnownLabels(root);
         } catch (error) {
-          // 单个节点异常不应中断整页翻译。
           console.debug('[NovelAI 汉化] 跳过异常节点', error);
         }
       }
     }
     syncTitle();
-    updateCount();
+    scheduleThemeEditorLayoutFix();
   }
 
   function updateCount() {
@@ -2257,7 +2513,10 @@ globalThis.NAI_ZH_DICT = Object.freeze({
 
   function onMutations(mutations) {
     if (!state.enabled) return;
-    const titleNode = document.querySelector('title');
+    const cachedTitle = state.titleNode;
+    const titleNode = cachedTitle && cachedTitle.isConnected
+      ? cachedTitle
+      : (state.titleNode = document.querySelector('title'));
     for (const mutation of mutations) {
       if (titleNode && (mutation.target === titleNode || mutation.target.parentElement === titleNode)) {
         syncTitle();
@@ -2274,11 +2533,8 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             translateTextNode(node);
             continue;
           }
-          // 菜单/下拉框通常很小：在 MutationObserver 回调里同步翻译，
-          // 避免先绘制英文、40ms 后再换成中文造成的闪烁。
           const nodeText = node.textContent || '';
           const textLength = nodeText.length;
-          // 密码面板在切换标签时会被 React 重建，必须立即处理，不能等批量队列。
           if (textLength <= 10000 || /password/i.test(nodeText)) {
             try {
               scanNode(node);
@@ -2292,9 +2548,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         }
       }
     }
-    // 生成图像时 NovelAI 会临时重写标题；每批变化结束立即拉回中文。
     syncTitle();
-    // 处理同步插入后立刻发生属性变化的情况。
     if (!state.flushScheduled && mutations.length) {
       state.flushScheduled = true;
       setTimeout(flush, 40);
@@ -2336,12 +2590,10 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     scanNode(document.documentElement || document);
     forceKnownLabels(document.documentElement || document);
     syncTitle();
-    // 等 React 首屏渲染稳定后再显示；只等一两帧仍会看到英文内容被替换。
     setTimeout(() => {
       if (!state.enabled) return;
       scanNode(document.body || document.documentElement);
       syncTitle();
-      updateCount();
       requestAnimationFrame(() => requestAnimationFrame(() => {
         try {
           root.classList.remove('nai-zh-booting');
@@ -2355,7 +2607,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
       if (!state.enabled || document.visibilityState !== 'visible') return;
       scanNode(document.body || document.documentElement);
       syncTitle();
-      updateCount();
     };
     state.scanTimer = setInterval(() => {
       if (typeof requestIdleCallback === 'function') {
@@ -2438,7 +2689,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     if (!state.enabled) return;
     scanNode(document.body || document.documentElement);
     syncTitle();
-    updateCount();
   }
 
   function listenToStorage() {
@@ -2449,7 +2699,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         setEnabled(changes.enabled.newValue !== false);
       });
     } catch {
-      // 独立页面测试或扩展上下文失效时忽略。
     }
   }
 
@@ -2472,7 +2721,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         }
       });
     } catch {
-      // 同上。
     }
   }
 
@@ -2528,7 +2776,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     });
   }
 
-  // 只在绘图页启用；从站内其他页面跳转过来时自动等待并启动。
   if (isImagePage()) {
     if (document.readyState === 'loading') {
       document.addEventListener(
@@ -2553,7 +2800,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     }, 1000);
   }
 
-  // 调试接口：同一套引擎可被扩展与用户脚本复用。
   const api = { status, enable, disable, rescan, setEnabled };
   try {
     Object.defineProperty(window, '__NAI_ZH__', {
@@ -2561,23 +2807,13 @@ globalThis.NAI_ZH_DICT = Object.freeze({
       value: api,
     });
   } catch {
-    // 某些页面环境不允许扩展自定义属性时忽略。
   }
   try {
     globalThis.__NAI_ZH_API__ = api;
   } catch {
-    // 忽略沙箱限制。
   }
 })();
 
-
-/* ---------------------------------------------------------------------------
- * 提示词增强模块
- * 来源：NovelAI Prompt Helper 1.2.3
- * 第三方提示词增强模块（MIT License）
- * 集成与界面调整：Hayasakai
- * 原脚本的 MIT 许可与署名信息保留在本文件及 THIRD_PARTY_NOTICES.md 中。
- * ------------------------------------------------------------------------- */
 (function () {
     'use strict';
     if (typeof window.__NAIWeightAdjusting !== 'boolean') {
@@ -2682,24 +2918,50 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         return bundle[key] ?? LOCALE_MESSAGES.en[key] ?? key;
     }
     function formatPromptText(text) {
-        // 中文逗号替换为英文逗号
         text = text.replace(/，/g, ',');
         const structure = WeightShortcuts.parsePromptStructure(text);
         WeightShortcuts.normalizeTree(structure);
         return WeightShortcuts.serializeTree(structure);
     }
-    // 不注册扩展菜单；提示词增强使用默认设置并在页面内操作。
+    let popupScale = 1;
     const TagAssist = (() => {
-        const MAX_SUGGESTIONS = 36;
-        // 本地词库先出结果，网络只做增量补全，因此防抖可以更短。
+        const SCALE_MIN = 0.7;
+        const SCALE_MAX = 1.35;
+        function computeScaleFromPopup() {
+            if (!popup) return 1;
+            const rect = popup.getBoundingClientRect();
+            const width = rect.width || 760;
+            const height = rect.height || 420;
+            const raw = Math.min(width / 760, height / 420);
+            return Math.max(SCALE_MIN, Math.min(SCALE_MAX, Math.round(raw * 100) / 100));
+        }
+        function applyScale() {
+            popupScale = computeScaleFromPopup();
+            const value = String(popupScale);
+            if (popup) popup.style.setProperty('--nai-scale', value);
+            document.documentElement.style.setProperty('--nai-scale', value);
+            if (tagDetailCard) tagDetailCard.style.setProperty('--nai-scale', value);
+            if (contextMenu) contextMenu.style.setProperty('--nai-scale', value);
+            syncDockedDetailPanel();
+        }
+        function getMaxSuggestions() {
+            if (!popup || !popup.offsetWidth || !popup.offsetHeight) return 36;
+            const rect = popup.getBoundingClientRect();
+            const listMode = popup.dataset.viewMode === 'list';
+            const columns = listMode ? 1 : Math.max(1, Math.floor((rect.width - 10) / (185 * popupScale)));
+            const rows = Math.max(1, Math.floor((rect.height - 110) / (listMode ? 35 * popupScale : 70 * popupScale)));
+            return Math.max(36, Math.min(200, columns * rows * 2));
+        }
         const DEBOUNCE_DELAY = 50;
         const DEBOUNCE_DELAY_EMOTICON = 500;
+        const POPUP_STATE_KEY = 'nai_popup_state_v1';
+        const DETAIL_DOCK_KEY = 'nai_tag_detail_dock_v1';
         const GELBOORU_API_URL = 'https://gelbooru.com/index.php';
         const DANBOORU_API_URL = 'https://danbooru.donmai.us';
         const API_TIMEOUT_MS = 1200;
         const SUGGESTION_CACHE_TTL = 5 * 60 * 1000;
         const SUGGESTION_CACHE_LIMIT = 80;
-        const REMOTE_CACHE_KEY = 'danbooru_cloud_translations_v6';
+        const REMOTE_CACHE_KEY = 'danbooru_cloud_translations_v7';
         const REMOTE_CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
         const REMOTE_MIN_ENTRIES = 1000;
         const REMOTE_DICT_SOURCES = [
@@ -2708,6 +2970,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 urls: [
                     'https://raw.githubusercontent.com/amenorira/danbooru-tags-data-zh/main/tags/general.csv',
                     'https://cdn.jsdelivr.net/gh/amenorira/danbooru-tags-data-zh@main/tags/general.csv',
+                    'https://huggingface.co/datasets/ame-la/danbooru-tags-data-zh/resolve/main/tags/general.csv',
                 ],
             },
             {
@@ -2715,6 +2978,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 urls: [
                     'https://raw.githubusercontent.com/amenorira/danbooru-tags-data-zh/main/tags/artist.csv',
                     'https://cdn.jsdelivr.net/gh/amenorira/danbooru-tags-data-zh@main/tags/artist.csv',
+                    'https://huggingface.co/datasets/ame-la/danbooru-tags-data-zh/resolve/main/tags/artist.csv',
                 ],
             },
             {
@@ -2722,6 +2986,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 urls: [
                     'https://raw.githubusercontent.com/amenorira/danbooru-tags-data-zh/main/tags/character.csv',
                     'https://cdn.jsdelivr.net/gh/amenorira/danbooru-tags-data-zh@main/tags/character.csv',
+                    'https://huggingface.co/datasets/ame-la/danbooru-tags-data-zh/resolve/main/tags/character.csv',
                 ],
             },
             {
@@ -2729,6 +2994,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 urls: [
                     'https://raw.githubusercontent.com/amenorira/danbooru-tags-data-zh/main/tags/copyright.csv',
                     'https://cdn.jsdelivr.net/gh/amenorira/danbooru-tags-data-zh@main/tags/copyright.csv',
+                    'https://huggingface.co/datasets/ame-la/danbooru-tags-data-zh/resolve/main/tags/copyright.csv',
                 ],
             },
             {
@@ -2736,6 +3002,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 urls: [
                     'https://raw.githubusercontent.com/amenorira/danbooru-tags-data-zh/main/tags/meta.csv',
                     'https://cdn.jsdelivr.net/gh/amenorira/danbooru-tags-data-zh@main/tags/meta.csv',
+                    'https://huggingface.co/datasets/ame-la/danbooru-tags-data-zh/resolve/main/tags/meta.csv',
                 ],
             },
         ];
@@ -2743,11 +3010,11 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         const ALLOWED_CHARS_REGEX = /^[a-zA-Z\d_\-\s'\^=@()\u4e00-\u9fa5\u3040-\u309F\u30A0-\u30FF]+$/;
         const BREAK_CHARS = ',{}[]:.';
         let popup = null;
+        let popupPinned = false;
         let selectedIndex = -1;
         let currentMatches = [];
         let popupManualPosition = null;
         let popupPositionLock = null;
-        let popupFixedHeight = 0;
         let currentCountOrder = 'desc';
         let ignoreOutsideUntil = 0;
         let isPopupActive = false;
@@ -2758,11 +3025,23 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         let translations = new Map();
         let translationMeta = new Map();
         let tagCatalog = new Map();
+        let aliasEntries = [];
+        let cjkAliasEntries = [];
         let translationsLoading = false;
         let translationsError = null;
         let remoteTranslationsAt = 0;
         const suggestionCache = new Map();
         let contextMenu = null;
+        let tagDetailCard = null;
+        let tagDetailShowTimer = null;
+        let tagDetailHideTimer = null;
+        let tagDetailTag = null;
+        let tagDetailItem = null;
+        let tagDetailPointer = false;
+        let tagDetailDocked = false;
+        let tagDetailLocked = false;
+        let itemHoverTimer = null;
+        const tagWikiCache = new Map();
         let lastQuery = '';
         let lastInput = null;
         let activeView = 'suggest';
@@ -2772,7 +3051,11 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         let lastSuggestionInput = null;
         const STAR_SVG = '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
         const CROSS_SVG = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
-        // NAI tag aliases: original Danbooru name -> NAI name
+        const EXTERNAL_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.41l-8.29 8.3-1.42-1.41 8.3-8.29H14zM5 5h6v2H7v10h10v-4h2v6H5z"/></svg>';
+        const LIST_VIEW_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>';
+        const PIN_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z"/></svg>';
+        const CARD_VIEW_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z"/></svg>';
+        const DETAIL_DOCK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3V5zm2 2v10h9V7H5zm11 0v10h3V7h-3z"/></svg>';
         const NAI_TAG_ALIASES = {
             'v': 'peace sign',
             'double_v': 'double peace',
@@ -2785,7 +3068,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             'tachi-e': 'character image',
             'vivian_banshee': 'vivian (zenless zone zero)'
         };
-        // Reverse mapping: NAI name -> original Danbooru name(s)
         const NAI_ALIAS_REVERSE = {};
         for (const [original, nai] of Object.entries(NAI_TAG_ALIASES)) {
             const naiKey = nai.toLowerCase().replace(/\s+/g, '_');
@@ -2793,16 +3075,21 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             NAI_ALIAS_REVERSE[naiKey].push(original);
         }
         GM_addStyle(`                .autocomplete-container {
+                    --nai-scale: 1;
                     position: fixed;
                     z-index: 100000;
-                    width: min(700px, calc(100vw - 28px));
-                    min-width: min(520px, calc(100vw - 28px));
-                    max-height: min(650px, calc(100vh - 40px));
+                    width: 760px;
+                    height: 420px;
+                    min-width: 360px;
+                    min-height: 220px;
+                    max-width: calc(100vw - 16px);
+                    max-height: calc(100vh - 16px);
+                    resize: none;
                     display: flex;
                     flex-direction: column;
                     overflow: hidden;
                     border: 1px solid var(--nai-popup-border, #3d3f5c);
-                    border-radius: 14px;
+                    border-radius: 12px;
                     background: var(--nai-popup-bg, rgba(25, 26, 46, 0.98));
                     box-shadow: var(--nai-popup-shadow, 0 18px 48px rgba(0, 0, 0, 0.55));
                     font-family: var(--nai-popup-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif);
@@ -2814,18 +3101,42 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     opacity: 1;
                     pointer-events: auto;
                 }
+                select option {
+                    background-color: var(--nai-popup-bg, #1a1c30) !important;
+                    color: var(--nai-popup-text, #e8e8f2) !important;
+                }
+                [role="listbox"] {
+                    max-height: min(320px, 60vh) !important;
+                    overflow-y: auto !important;
+                    overflow-x: hidden !important;
+                    background-color: var(--nai-popup-bg, #1a1c30) !important;
+                }
+                .suggestion-resizer {
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 3;
+                    width: 16px;
+                    height: 16px;
+                    cursor: nwse-resize;
+                    opacity: 0.7;
+                    background: linear-gradient(135deg, transparent 45%, var(--nai-popup-border, #50547d) 45%, var(--nai-popup-border, #50547d) 55%, transparent 55%, transparent 68%, var(--nai-popup-border, #50547d) 68%, var(--nai-popup-border, #50547d) 78%, transparent 78%);
+                }
+                .suggestion-resizer:hover { opacity: 1; }
                 .autocomplete-container,
                 .autocomplete-container *,
                 .autocomplete-container *,
                 .tag-context-menu,
                 .tag-context-menu * {
                     font-family: var(--nai-popup-font, inherit) !important;
+                    box-sizing: border-box;
                 }
                 .suggestion-header {
                     display: flex;
                     align-items: center;
-                    gap: 8px;
-                    padding: 10px 13px;
+                    min-width: 0;
+                    gap: 6px;
+                    padding: 7px 10px;
                     border-bottom: 1px solid var(--nai-popup-border-soft, #2b2d46);
                     background: var(--nai-popup-surface, rgba(255, 255, 255, 0.03));
                     cursor: grab;
@@ -2836,23 +3147,24 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 .suggestion-header button { cursor: pointer; }
                 .suggestion-tabs {
                     display: flex;
+                    min-width: 0;
                     gap: 2px;
                     padding: 2px;
                     border: 1px solid var(--nai-popup-border-soft, #2b2d46);
-                    border-radius: 8px;
+                    border-radius: 7px;
                     background: var(--nai-popup-hint, #141527);
                 }
                 .suggestion-tab {
                     display: inline-flex;
                     align-items: center;
-                    gap: 5px;
-                    padding: 4px 8px;
+                    gap: 4px;
+                    padding: 3px 7px;
                     border: 1px solid transparent;
-                    border-radius: 6px;
+                    border-radius: 5px;
                     background: transparent;
                     color: var(--nai-popup-muted, #8f92ad);
                     font-family: inherit;
-                    font-size: 11px;
+                    font-size: calc(14px * var(--nai-scale));
                     line-height: 1.4;
                     white-space: nowrap;
                     cursor: pointer;
@@ -2869,14 +3181,14 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     box-shadow: inset 0 -2px var(--nai-popup-accent, #e3cc78), 0 2px 8px rgba(0, 0, 0, 0.12);
                 }
                 .suggestion-tab-count {
-                    min-width: 16px;
-                    height: 16px;
+                    min-width: 15px;
+                    height: 15px;
                     padding: 0 4px;
                     border-radius: 999px;
                     background: var(--nai-popup-surface, #20223a);
                     color: var(--nai-popup-muted, #8f92ad);
-                    font-size: 9px;
-                    line-height: 16px;
+                    font-size: calc(10px * var(--nai-scale));
+                    line-height: 15px;
                     text-align: center;
                 }
                 .suggestion-tab.active .suggestion-tab-count {
@@ -2884,30 +3196,23 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     color: var(--nai-popup-accent-text, #17182b);
                 }
                 .suggestion-empty {
-                    padding: 22px 16px;
+                    padding: 16px 12px;
                     color: var(--nai-popup-muted, #8f92ad);
-                    font-size: 12px;
-                    line-height: 1.8;
+                    font-size: calc(12px * var(--nai-scale));
+                    line-height: 1.6;
                     text-align: center;
                 }
-                .suggestion-title {
-                    flex: none;
-                    font-size: 14px;
-                    font-weight: 700;
-                    letter-spacing: 0.2px;
-                    color: var(--nai-popup-text, #f3f2ff);
-                }
                 .suggestion-query {
-                    max-width: 150px;
+                    max-width: 130px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
-                    padding: 2px 8px;
+                    padding: 2px 6px;
                     border: 1px solid var(--nai-popup-accent-border, #424563);
                     border-radius: 999px;
                     background: var(--nai-popup-accent-soft, rgba(227, 204, 120, 0.07));
                     color: var(--nai-popup-accent, #e3cc78);
-                    font-size: 11px;
+                    font-size: calc(11px * var(--nai-scale));
                 }
                 .suggestion-spacer { flex: 1; }
                 .suggestion-close {
@@ -2918,11 +3223,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     place-items: center;
                     padding: 0;
                     border: 1px solid transparent;
-                    border-radius: 6px;
+                    border-radius: 5px;
                     background: transparent;
                     color: var(--nai-popup-muted, #8e91ab);
-                    font-size: 18px;
+                    font-size: calc(18px * var(--nai-scale));
                     line-height: 1;
+                    transform: translateY(-2px);
                     cursor: pointer;
                 }
                 .suggestion-close:hover {
@@ -2930,24 +3236,95 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     background: var(--nai-popup-hover, #262946);
                     color: var(--nai-popup-text, #fff);
                 }
-                .suggestion-hint {
-                    padding: 7px 14px;
-                    border-bottom: 1px solid var(--nai-popup-border-soft, #23253b);
-                    background: var(--nai-popup-hint, #141527);
-                    color: var(--nai-popup-muted, #8f92ad);
-                    font-size: 11px;
-                    line-height: 1.5;
+                .suggestion-maximize {
+                    width: 24px;
+                    height: 24px;
+                    flex: none;
+                    display: grid;
+                    place-items: center;
+                    padding: 0;
+                    border: 1px solid transparent;
+                    border-radius: 6px;
+                    background: transparent;
+                    color: var(--nai-popup-muted, #8e91ab);
+                    font-size: calc(14px * var(--nai-scale));
+                    line-height: 1;
+                    cursor: pointer;
                 }
-                .suggestion-hint.error {
-                    color: var(--nai-popup-danger, #ff9d9d);
-                    background: var(--nai-popup-danger-soft, rgba(255, 107, 107, 0.06));
+                .suggestion-maximize:hover {
+                    border-color: var(--nai-popup-border, #424563);
+                    background: var(--nai-popup-hover, #262946);
+                    color: var(--nai-popup-text, #fff);
+                }
+                .suggestion-view-toggle {
+                    width: 24px;
+                    height: 24px;
+                    flex: none;
+                    display: grid;
+                    place-items: center;
+                    padding: 0;
+                    border: 1px solid transparent;
+                    border-radius: 6px;
+                    background: transparent;
+                    color: var(--nai-popup-muted, #8e91ab);
+                    cursor: pointer;
+                }
+                .suggestion-view-toggle svg { width: calc(14px * var(--nai-scale)); height: calc(14px * var(--nai-scale)); fill: currentColor; }
+                .suggestion-view-toggle:hover {
+                    border-color: var(--nai-popup-accent, #e3cc78);
+                    color: var(--nai-popup-accent, #e3cc78);
+                }
+                .suggestion-pin {
+                    width: 24px;
+                    height: 24px;
+                    flex: none;
+                    display: grid;
+                    place-items: center;
+                    padding: 0;
+                    border: 1px solid transparent;
+                    border-radius: 6px;
+                    background: transparent;
+                    color: var(--nai-popup-muted, #8e91ab);
+                    cursor: pointer;
+                }
+                .suggestion-pin svg { width: calc(14px * var(--nai-scale)); height: calc(14px * var(--nai-scale)); fill: currentColor; }
+                .suggestion-pin:hover {
+                    border-color: var(--nai-popup-accent, #e3cc78);
+                    color: var(--nai-popup-accent, #e3cc78);
+                }
+                .suggestion-pin.active {
+                    border-color: var(--nai-popup-accent-border, #424563);
+                    background: var(--nai-popup-accent-soft, rgba(227, 204, 120, 0.08));
+                    color: var(--nai-popup-accent, #e3cc78);
+                }
+                .suggestion-detail-dock {
+                    width: 24px;
+                    height: 24px;
+                    flex: none;
+                    display: grid;
+                    place-items: center;
+                    padding: 0;
+                    border: 1px solid transparent;
+                    border-radius: 6px;
+                    background: transparent;
+                    color: var(--nai-popup-muted, #8e91ab);
+                    cursor: pointer;
+                }
+                .suggestion-detail-dock svg { width: calc(14px * var(--nai-scale)); height: calc(14px * var(--nai-scale)); fill: currentColor; }
+                .suggestion-detail-dock:hover {
+                    border-color: var(--nai-popup-accent, #e3cc78);
+                    color: var(--nai-popup-accent, #e3cc78);
+                }
+                .suggestion-detail-dock.active {
+                    border-color: var(--nai-popup-accent-border, #424563);
+                    background: var(--nai-popup-accent-soft, rgba(227, 204, 120, 0.08));
+                    color: var(--nai-popup-accent, #e3cc78);
                 }
                 .suggestion-scroll-wrapper {
                     flex: 1 1 auto;
                     min-height: 0;
-                    padding: 7px;
+                    padding: 5px;
                     overflow-y: auto;
-                    max-height: 500px;
                     scrollbar-width: thin;
                     scrollbar-color: var(--nai-popup-scroll, #424563) transparent;
                 }
@@ -2959,11 +3336,10 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     border-radius: 999px;
                 }
                 .suggestion-list {
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-content: flex-start;
-                    justify-content: flex-start;
-                    gap: 4px;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(calc(150px * var(--nai-scale)), 1fr));
+                    align-content: start;
+                    gap: calc(3px * var(--nai-scale));
                 }
                 .suggestion-list.is-empty {
                     display: flex;
@@ -2976,25 +3352,40 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     align-items: center;
                     justify-content: center;
                 }
-                /* 弹窗在光标右侧时反向填充列，让最后一项落在靠近光标的左下角 */
                 .suggestion-list.reverse-x { direction: rtl; justify-content: flex-end; }
                 .suggestion-list.reverse-x .suggestion-item { direction: ltr; }
-                /* 只有一项时固定从左侧开始，避免单卡贴在右边留下大片空白 */
                 .suggestion-list.single-item { direction: ltr; justify-content: flex-start; }
                 .suggestion-item {
-                    display: grid;
-                    grid-template-columns: 12px minmax(0, 1fr) 30px;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
                     align-items: center;
-                    gap: 4px;
-                    flex: 1 1 200px;
-                    max-width: 320px;
-                    min-height: 50px;
-                    padding: 4px 8px;
+                    justify-content: center;
+                    gap: calc(2px * var(--nai-scale));
+                    width: 100%;
+                    min-width: 0;
+                    height: calc(66px * var(--nai-scale));
+                    min-height: calc(66px * var(--nai-scale));
+                    max-height: calc(66px * var(--nai-scale));
+                    overflow: hidden;
+                    padding: calc(12px * var(--nai-scale)) calc(4px * var(--nai-scale)) calc(8px * var(--nai-scale));
                     border: 1px solid var(--nai-popup-border-soft, #2b2d46);
-                    border-radius: 6px;
+                    border-radius: 7px;
                     background: var(--nai-popup-surface, rgba(255, 255, 255, 0.03));
                     cursor: pointer;
                     white-space: normal;
+                    text-align: center;
+                }
+                .suggestion-main {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    width: 100%;
+                    align-items: center;
+                    justify-content: center;
+                    gap: calc(5px * var(--nai-scale));
+                    max-width: 100%;
+                    min-width: 0;
+                    padding: 0 calc(8px * var(--nai-scale));
                 }
                 .suggestion-item:hover,
                 .suggestion-item.selected {
@@ -3004,49 +3395,38 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 .suggestion-item.selected {
                     border-color: var(--nai-popup-accent, #e3cc78);
                     background: var(--nai-popup-selected, #30345a);
-                    box-shadow: inset 4px 0 var(--nai-popup-accent, #e3cc78), 0 0 0 1px var(--nai-popup-accent, #e3cc78);
+                    box-shadow: inset 3px 0 var(--nai-popup-accent, #e3cc78), 0 0 0 1px var(--nai-popup-accent, #e3cc78);
                 }
                 .suggestion-icon {
-                    width: 12px;
-                    height: 12px;
-                    flex: none;
+                    position: absolute;
+                    top: calc(5px * var(--nai-scale));
+                    right: calc(5px * var(--nai-scale));
+                    width: calc(14px * var(--nai-scale));
+                    height: calc(14px * var(--nai-scale));
                     display: flex;
                     align-items: center;
                     justify-content: center;
                 }
-                .suggestion-icon svg { width: 11px; height: 11px; }
+                .suggestion-icon svg { width: calc(12px * var(--nai-scale)); height: calc(12px * var(--nai-scale)); }
                 .suggestion-icon.fav-icon svg { fill: var(--nai-popup-accent, #ffd76a); }
                 .suggestion-icon.excl-icon svg { fill: var(--nai-popup-danger, #ff7b7b); }
-                .suggestion-content {
-                    flex: 1;
-                    min-width: 0;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 0;
-                    text-align: center;
-                }
-                .suggestion-title-line {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 3px;
-                    min-width: 0;
-                    width: 100%;
-                }
                 .suggestion-en {
-                    flex: 0 1 auto;
+                    display: block;
+                    width: 100%;
                     min-width: 0;
                     max-width: 100%;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
+                    overflow-wrap: normal;
+                    padding: 0 calc(42px * var(--nai-scale));
                     color: var(--nai-popup-text, #f1f1fa);
-                    font-size: 14px;
-                    font-weight: 600;
+                    font-size: calc(16px * var(--nai-scale));
+                    font-weight: 700;
+                    line-height: 1.3;
+                    text-align: center;
                     letter-spacing: 0.1px;
                 }
-                /* Danbooru 分类颜色：通用/画师/作品/角色/元标签 */
                 .suggestion-item[data-category="0"] { --nai-tag-color: #0075f8; }
                 .suggestion-item[data-category="1"] { --nai-tag-color: #f90000; }
                 .suggestion-item[data-category="3"] { --nai-tag-color: #a800ff; }
@@ -3056,17 +3436,22 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     color: var(--nai-tag-color, var(--nai-popup-text, #f1f1fa));
                 }
                 .suggestion-category {
+                    position: absolute;
+                    top: calc(4px * var(--nai-scale));
+                    left: calc(6px * var(--nai-scale));
+                    z-index: 1;
                     flex: none;
                     display: inline-flex;
                     align-items: center;
-                    padding: 0 4px;
+                    overflow: visible;
+                    padding: 0 calc(4px * var(--nai-scale));
                     border: 1px solid var(--nai-popup-border, #3a3d58);
                     border-radius: 3px;
                     background: var(--nai-popup-hint, #141527);
                     color: var(--nai-popup-muted, #9da0bb);
-                    font-size: 10px;
-                    font-weight: 600;
-                    line-height: 15px;
+                    font-size: calc(10px * var(--nai-scale));
+                    font-weight: 700;
+                    line-height: calc(14px * var(--nai-scale));
                     white-space: nowrap;
                 }
                 .suggestion-item[data-category] .suggestion-category {
@@ -3079,76 +3464,170 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 .suggestion-item[data-category="4"] .suggestion-category { background: rgba(0, 168, 0, 0.16); }
                 .suggestion-item[data-category="5"] .suggestion-category { background: rgba(255, 165, 0, 0.16); }
                 .suggestion-zh {
+                    display: block;
                     width: 100%;
+                    min-width: 0;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
+                    overflow-wrap: normal;
+                    padding: 0 calc(34px * var(--nai-scale));
                     text-align: center;
-                    color: var(--nai-popup-muted, #bcbdd4);
-                    font-size: 12.5px;
-                    line-height: 1.3;
+                    color: var(--nai-popup-muted, #a8abc4);
+                    font-size: calc(12.5px * var(--nai-scale));
+                    font-weight: 500;
+                    line-height: 1.25;
+                }
+                .suggestion-item[data-category] .suggestion-zh {
+                    color: var(--nai-tag-color, var(--nai-popup-muted, #a8abc4));
+                }
+                .suggestion-official {
+                    position: absolute;
+                    left: calc(6px * var(--nai-scale));
+                    bottom: calc(3px * var(--nai-scale));
+                    z-index: 1;
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 0 4px;
+                    border: 1px solid var(--nai-popup-accent-border, #424563);
+                    border-radius: 3px;
+                    background: var(--nai-popup-accent-soft, rgba(227, 204, 120, 0.08));
+                    color: var(--nai-popup-accent, #e3cc78);
+                    font-size: calc(10px * var(--nai-scale));
+                    font-weight: 700;
+                    line-height: calc(14px * var(--nai-scale));
+                    white-space: nowrap;
+                    pointer-events: none;
                 }
                 .suggestion-zh.missing {
                     color: var(--nai-popup-muted-soft, #70738c);
                     font-style: italic;
                 }
-                .suggestion-alias {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    color: var(--nai-popup-accent, #d9c47a);
-                    font-size: 10px;
-                    line-height: 1.45;
-                }
-                .suggestion-alias b { color: var(--nai-popup-accent-strong, #f0dda0); font-weight: 600; }
                 .suggestion-count {
-                    flex: none;
-                    margin-left: 2px;
+                    position: absolute;
+                    bottom: calc(4px * var(--nai-scale));
+                    right: calc(6px * var(--nai-scale));
+                    min-width: 0;
+                    overflow: visible;
                     color: var(--nai-popup-muted, #7f829c);
-                    font-size: 11px;
+                    font-size: calc(11px * var(--nai-scale));
+                    font-weight: 600;
                     font-variant-numeric: tabular-nums;
                     text-align: right;
+                    white-space: nowrap;
                 }
-                .suggestion-alias { display: none; }
+                .autocomplete-container[data-view-mode="list"] .suggestion-list {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(calc(340px * var(--nai-scale)), 1fr));
+                    gap: calc(3px * var(--nai-scale)) calc(5px * var(--nai-scale));
+                }
+                .autocomplete-container[data-view-mode="list"] .suggestion-item {
+                    display: grid;
+                    height: auto;
+                    max-height: none;
+                    grid-template-columns: calc(14px * var(--nai-scale)) calc(46px * var(--nai-scale)) minmax(0, 1fr) minmax(0, 1.15fr) calc(32px * var(--nai-scale)) calc(42px * var(--nai-scale));
+                    grid-template-areas: "icon cat en zh off heat";
+                    align-items: center;
+                    gap: calc(6px * var(--nai-scale));
+                    min-height: calc(32px * var(--nai-scale));
+                    padding: calc(3px * var(--nai-scale)) calc(7px * var(--nai-scale));
+                    border-radius: 6px;
+                    text-align: left;
+                }
+                .autocomplete-container[data-view-mode="list"] .suggestion-main { display: contents; }
+                .autocomplete-container[data-view-mode="list"] .suggestion-icon {
+                    position: static;
+                    grid-area: icon;
+                    width: calc(14px * var(--nai-scale));
+                    height: calc(14px * var(--nai-scale));
+                }
+                .autocomplete-container[data-view-mode="list"] .suggestion-category {
+                    position: static;
+                    grid-area: cat;
+                    justify-self: start;
+                    padding: 0 calc(4px * var(--nai-scale));
+                    font-size: calc(10px * var(--nai-scale));
+                    line-height: calc(15px * var(--nai-scale));
+                }
+                .autocomplete-container[data-view-mode="list"] .suggestion-en {
+                    grid-area: en;
+                    text-align: left;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    padding: 0;
+                    font-size: calc(15px * var(--nai-scale));
+                    line-height: 1.2;
+                }
+                .autocomplete-container[data-view-mode="list"] .suggestion-official {
+                    position: static;
+                    grid-area: off;
+                    justify-self: start;
+                    align-self: center;
+                }
+                .autocomplete-container[data-view-mode="list"] .suggestion-zh {
+                    grid-area: zh;
+                    padding: 0;
+                    text-align: left;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    color: var(--nai-popup-muted, #bcbdd4);
+                    font-size: calc(12.5px * var(--nai-scale));
+                }
+                .autocomplete-container[data-view-mode="list"] .suggestion-count {
+                    position: static;
+                    grid-area: heat;
+                    justify-self: end;
+                    font-size: calc(12px * var(--nai-scale));
+                }
                 .suggestion-footer {
                     display: flex;
                     flex-wrap: wrap;
                     align-items: center;
-                    gap: 6px 12px;
-                    padding: 8px 12px;
+                    gap: 5px 10px;
+                    padding: 7px 10px;
                     border-top: 1px solid var(--nai-popup-border-soft, #2b2d46);
                     background: var(--nai-popup-hint, #141527);
                     color: var(--nai-popup-muted, #7f829c);
-                    font-size: 10px;
+                    font-size: calc(11px * var(--nai-scale));
                     line-height: 1.5;
                 }
                 .suggestion-footer span {
                     display: inline-flex;
                     align-items: center;
-                    gap: 4px;
+                    gap: 5px;
                     white-space: nowrap;
+                }
+                .suggestion-footer svg {
+                    width: calc(12px * var(--nai-scale));
+                    height: calc(12px * var(--nai-scale));
+                    flex: none;
+                    fill: currentColor;
+                    opacity: 0.85;
                 }
                 .suggestion-footer kbd {
                     display: inline-block;
-                    min-width: 16px;
-                    padding: 0 4px;
+                    min-width: 17px;
+                    padding: 0 5px;
                     border: 1px solid var(--nai-popup-border, #3e415d);
                     border-bottom-width: 2px;
                     border-radius: 4px;
                     background: var(--nai-popup-surface, #20223a);
                     color: var(--nai-popup-text, #c9cbe0);
                     font-family: ui-monospace, Consolas, monospace;
-                    font-size: 9px;
+                    font-size: calc(10px * var(--nai-scale));
                     line-height: 15px;
                     text-align: center;
                 }
                 .tag-context-menu {
+                    --nai-scale: 1;
                     position: fixed;
                     z-index: 100001;
-                    min-width: 112px;
-                    padding: 3px;
+                    min-width: 108px;
+                    padding: 2px;
                     border: 1px solid var(--nai-popup-border, #3d3f5c);
-                    border-radius: 9px;
+                    border-radius: 8px;
                     background: var(--nai-popup-bg, #1a1c30);
                     box-shadow: var(--nai-popup-shadow, 0 10px 28px rgba(0, 0, 0, 0.5));
                     color: var(--nai-popup-text, #e8e8f2);
@@ -3163,17 +3642,128 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 .tag-context-menu-item {
                     display: flex;
                     align-items: center;
-                    gap: 6px;
-                    padding: 6px 9px;
-                    border-radius: 6px;
+                    gap: 5px;
+                    padding: 4px 8px;
+                    border-radius: 5px;
                     color: var(--nai-popup-text, #e8e8f2);
-                    font-size: 12px;
+                    font-size: calc(12px * var(--nai-scale));
                     cursor: pointer;
                 }
                 .tag-context-menu-item:hover { background: var(--nai-popup-hover, #2b2e4b); }
-                .tag-context-menu-item svg { width: 12px; height: 12px; flex: none; }
+                .tag-context-menu-item svg { width: calc(12px * var(--nai-scale)); height: calc(12px * var(--nai-scale)); flex: none; }
                 .tag-context-menu-item.fav-item svg { fill: var(--nai-popup-accent, #ffd76a); }
                 .tag-context-menu-item.excl-item svg { fill: var(--nai-popup-danger, #ff7b7b); }
+                .tag-detail-card {
+                    --nai-scale: 1;
+                    position: fixed;
+                    z-index: 100002;
+                    width: min(calc(320px * var(--nai-scale)), calc(100vw - 16px));
+                    max-height: min(380px, calc(100vh - 16px));
+                    overflow: auto;
+                    padding: 12px;
+                    border: 1px solid var(--nai-popup-border, #3d3f5c);
+                    border-radius: 10px;
+                    background: var(--nai-popup-bg, #1a1c30);
+                    box-shadow: var(--nai-popup-shadow, 0 12px 32px rgba(0, 0, 0, 0.55));
+                    color: var(--nai-popup-text, #e8e8f2);
+                    font-family: var(--nai-popup-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif);
+                    opacity: 0;
+                    transform: translateY(4px);
+                    pointer-events: none;
+                    transition: opacity 0.12s ease, transform 0.12s ease;
+                }
+                .tag-detail-card.is-open {
+                    opacity: 1;
+                    transform: none;
+                    pointer-events: auto;
+                }
+                .tag-detail-card.is-docked {
+                    position: fixed;
+                    top: 8px;
+                    left: 8px;
+                    right: auto;
+                    display: flex;
+                    flex-direction: column;
+                    width: 380px;
+                    height: 420px;
+                    min-height: 0;
+                    max-height: calc(100vh - 16px);
+                    opacity: 1;
+                    transform: none;
+                    pointer-events: auto;
+                }
+                .tag-detail-card.is-docked .tag-detail-desc {
+                    flex: 1 1 auto;
+                    min-height: 0;
+                    max-height: none;
+                }
+                .tag-detail-empty {
+                    color: var(--nai-popup-muted, #8f92ad);
+                    font-size: calc(13px * var(--nai-scale));
+                    line-height: 1.6;
+                }
+                .tag-detail-head { display: block; }
+                .tag-detail-name {
+                    margin-top: 7px;
+                    color: var(--nai-popup-text, #f1f1fa);
+                    font-size: calc(18px * var(--nai-scale));
+                    font-weight: 800;
+                    line-height: 1.35;
+                    text-align: center;
+                    overflow-wrap: anywhere;
+                }
+                .tag-detail-zh {
+                    margin-top: 14px;
+                    color: var(--nai-popup-muted, #a8abc4);
+                    font-size: calc(14px * var(--nai-scale));
+                    line-height: 1.5;
+                    overflow-wrap: anywhere;
+                }
+                .tag-detail-meta {
+                    margin-top: 8px;
+                    color: var(--nai-popup-muted, #8f92ad);
+                    font-size: calc(13px * var(--nai-scale));
+                    line-height: 1.6;
+                    text-align: left;
+                }
+                .tag-detail-meta-line { white-space: pre-wrap; }
+                .tag-detail-desc {
+                    max-height: 108px;
+                    margin-top: 8px;
+                    padding-top: 8px;
+                    overflow: auto;
+                    border-top: 1px solid var(--nai-popup-border-soft, #2b2d46);
+                    color: var(--nai-popup-muted, #9da0bb);
+                    font-size: calc(13px * var(--nai-scale));
+                    line-height: 1.55;
+                    white-space: pre-wrap;
+                }
+                .tag-detail-actions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 6px;
+                    margin-top: 10px;
+                }
+                .tag-detail-actions button {
+                    width: auto;
+                    flex: 0 0 auto;
+                    min-width: calc(72px * var(--nai-scale));
+                    padding: 5px 12px;
+                    text-align: center;
+                    border: 1px solid var(--nai-popup-border-soft, #2b2d46);
+                    border-radius: 5px;
+                    background: var(--nai-popup-surface, rgba(255, 255, 255, 0.04));
+                    color: var(--nai-popup-text, #e8e8f2);
+                    font: inherit;
+                    font-size: calc(11px * var(--nai-scale));
+                    white-space: nowrap;
+                    cursor: pointer;
+                }
+                .tag-detail-actions button:hover {
+                    border-color: var(--nai-popup-accent, #e3cc78);
+                    color: var(--nai-popup-accent, #e3cc78);
+                }
                 @media (prefers-reduced-motion: reduce) {
                     .autocomplete-container,
                     .suggestion-tab,
@@ -3187,10 +3777,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 }
                 @media (max-width: 520px) {
                     .autocomplete-container {
-                        width: calc(100vw - 20px);
+                        width: calc(100vw - 16px);
                         min-width: 0;
                     }
-                    .suggestion-scroll-wrapper { max-height: 300px; }
                 }
         `);
         const normalizeQuery = (query) => query.trim().replace(/\s+/g, '_');
@@ -3213,7 +3802,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         }
 
         function refreshPopupAfterFavoriteChange() {
-            // 收藏/排除只改变卡片状态，不应该让整个弹窗重新选址。
             const rect = popup && popup.style.display !== 'none' ? popup.getBoundingClientRect() : null;
             if (!rect || !rect.width || !rect.height) {
                 if (activeView === 'favorites') {
@@ -3225,7 +3813,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 }
                 return;
             }
-            popupFixedHeight = Math.round(rect.height);
             popupPositionLock = {
                 left: rect.left,
                 top: rect.top,
@@ -3249,6 +3836,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             hideContextMenu(true);
             contextMenu = document.createElement('div');
             contextMenu.className = 'tag-context-menu';
+            contextMenu.style.setProperty('--nai-scale', String(popupScale));
             const isFavorite = favoriteTags.has(tagName);
             const isExcluded = excludedTags.has(tagName);
             const favItem = document.createElement('div');
@@ -3284,6 +3872,287 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             document.body.appendChild(contextMenu);
             contextMenu.classList.add('is-open');
         }
+        function wikiToPlainText(body) {
+            return String(body || '')
+                .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2')
+                .replace(/\[\[([^\]]+)\]\]/g, '$1')
+                .replace(/\[\/?(?:b|i|u|s|spoiler|quote|code)\]/gi, '')
+                .replace(/^h[1-6]\.\s*/gmi, '')
+                .replace(/\{\{[^}]*\}\}/g, '')
+                .replace(/\[([^\]]+)\]/g, '$1')
+                .replace(/<[^>]*>/g, '')
+                .replace(/(^|\n)\s*[#*\-]+\s*/g, '$1')
+                .replace(/\n{2,}/g, '\n')
+                .replace(/[ \t]+/g, ' ')
+                .trim();
+        }
+
+        function keepTagDetailOpen() {
+            tagDetailPointer = true;
+            clearTimeout(tagDetailHideTimer);
+            clearTimeout(itemHoverTimer);
+            if (tagDetailItem && tagDetailItem.dataset.index !== undefined) {
+                const index = Number(tagDetailItem.dataset.index);
+                if (Number.isFinite(index) && selectedIndex !== index) {
+                    selectedIndex = index;
+                    updateSelectionUI();
+                }
+            }
+        }
+
+        function getTagDetailCard() {
+            if (tagDetailCard) return tagDetailCard;
+            tagDetailCard = document.createElement('div');
+            tagDetailCard.className = 'tag-detail-card';
+            tagDetailCard.addEventListener('mouseenter', keepTagDetailOpen);
+            tagDetailCard.addEventListener('mouseleave', () => {
+                tagDetailPointer = false;
+                hideTagDetail();
+            });
+            document.body.appendChild(tagDetailCard);
+            tagDetailCard.style.setProperty('--nai-scale', String(popupScale));
+            return tagDetailCard;
+        }
+
+        function syncDockedDetailPanel() {
+            if (!tagDetailDocked || !tagDetailCard || !popup) return;
+            if (!tagDetailCard.classList.contains('is-docked')) return;
+            if (!popup.classList.contains('is-open') || popup.style.display === 'none') {
+                tagDetailCard.style.display = 'none';
+                return;
+            }
+            const rect = popup.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            const gap = 8;
+            const width = Math.round(rect.width / 2);
+            const height = Math.round(rect.height);
+            let left = Math.round(rect.right + gap);
+            if (left + width > window.innerWidth - 6) {
+                left = Math.round(rect.left - width - gap);
+            }
+            if (left < 6) left = Math.max(6, window.innerWidth - width - 6);
+            const top = Math.round(Math.max(6, Math.min(rect.top, window.innerHeight - height - 6)));
+            tagDetailCard.style.display = '';
+            tagDetailCard.style.left = `${left}px`;
+            tagDetailCard.style.top = `${top}px`;
+            tagDetailCard.style.width = `${width}px`;
+            tagDetailCard.style.height = `${height}px`;
+        }
+
+        function readDetailDockPreference() {
+            try {
+                if (typeof GM_getValue === 'function') {
+                    return GM_getValue(DETAIL_DOCK_KEY, false) === true;
+                }
+            } catch (_) { }
+            return false;
+        }
+        function saveDetailDockPreference() {
+            try {
+                if (typeof GM_setValue === 'function') GM_setValue(DETAIL_DOCK_KEY, tagDetailDocked);
+            } catch (_) { }
+        }
+        function hideTagDetail(immediate = false) {
+            clearTimeout(tagDetailShowTimer);
+            clearTimeout(tagDetailHideTimer);
+            tagDetailShowTimer = null;
+            tagDetailHideTimer = null;
+            if (tagDetailDocked) return;
+            if (!tagDetailCard) return;
+            if (immediate) {
+                tagDetailCard.classList.remove('is-open');
+                tagDetailCard.innerHTML = '';
+                tagDetailTag = null;
+                tagDetailItem = null;
+                tagDetailPointer = false;
+                return;
+            }
+            tagDetailHideTimer = setTimeout(() => {
+                if (!tagDetailCard) return;
+                tagDetailCard.classList.remove('is-open');
+                tagDetailTag = null;
+                tagDetailItem = null;
+            }, 160);
+        }
+
+        function loadTagWiki(tag, card) {
+            const desc = card.querySelector('[data-role="desc"]');
+            if (!desc) return;
+            const cached = tagWikiCache.get(tag.en);
+            if (cached !== undefined) {
+                desc.textContent = cached || '暂无简介，可点击 Danbooru 查看。';
+                return;
+            }
+            const url = `${DANBOORU_API_URL}/wiki_pages.json?${new URLSearchParams({
+                'search[title]': tag.en,
+                limit: '1',
+            }).toString()}`;
+            gmFetchText(url)
+                .then((text) => {
+                    const data = JSON.parse(text);
+                    const plain = wikiToPlainText(Array.isArray(data) && data[0] ? data[0].body : '');
+                    const summary = plain.length > 420 ? `${plain.slice(0, 420).trim()}…` : plain;
+                    tagWikiCache.set(tag.en, summary);
+                    if (card.dataset.tag === tag.en) {
+                        desc.textContent = summary || '暂无简介，可点击 Danbooru 查看。';
+                    }
+                })
+                .catch(() => {
+                    if (card.dataset.tag === tag.en) desc.textContent = '简介加载失败，可点击 Danbooru 查看。';
+                });
+        }
+
+        function copyTagDetailText(text, button) {
+            const done = () => {
+                if (!button) return;
+                const original = button.textContent;
+                button.textContent = '已复制';
+                setTimeout(() => { button.textContent = original; }, 900);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done, () => { });
+                return;
+            }
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try { document.execCommand('copy'); done(); } catch (_) { }
+            textarea.remove();
+        }
+
+        function renderTagDetailContent(tag, card) {
+            const zh = translations.get(tag.en) || '';
+            const resolvedCategory = resolveSuggestionCategory(tag);
+            const category = resolvedCategory === null
+                ? '—'
+                : suggestionCategoryLabel(resolvedCategory);
+            const official = V5_OFFICIAL_TAG_KEYS.has(tag.en);
+            const tagMeta = translationMeta.get(tag.en) || tagCatalog.get(tag.en);
+            const notes = tagMeta && tagMeta.notes ? String(tagMeta.notes).trim() : '';
+            const fullCount = (tag.count !== undefined && tag.count !== null && Number.isFinite(Number(tag.count)))
+                ? Number(tag.count).toLocaleString('en-US')
+                : '—';
+            const typeText = official ? '官方' : category;
+            const officialDesc = 'NovelAI 官方提示词，由 NovelAI 官方定义，用于 V5 模型中控制画面的风格、构图、复杂度与数据集特征等生成效果。';
+            const descText = official ? officialDesc : (notes ? notes : '正在加载 Danbooru 简介…');
+            card.dataset.tag = tag.en;
+            card.innerHTML = `<div class="tag-detail-head">
+                <div class="tag-detail-name">${escapeSuggestionHtml(tag.en.replace(/_/g, ' '))}</div>
+            </div>
+            <div class="tag-detail-zh">${zh ? escapeSuggestionHtml(zh) : '暂无翻译'}</div>
+            <div class="tag-detail-meta">
+                <div class="tag-detail-meta-line">类型：${escapeSuggestionHtml(typeText)}</div>
+                <div class="tag-detail-meta-line">数量：${escapeSuggestionHtml(fullCount)}</div>
+            </div>
+            <div class="tag-detail-desc" data-role="desc">${escapeSuggestionHtml(descText)}</div>
+            <div class="tag-detail-actions">
+                <button type="button" data-action="insert">插入标签</button>
+                <button type="button" data-action="copy-en">复制英文</button>
+                <button type="button" data-action="copy-zh">复制中文</button>
+                <button type="button" data-action="wiki">百科</button>
+            </div>`;
+            if (!official && !notes) loadTagWiki(tag, card);
+            card.querySelector('[data-action="insert"]').addEventListener('mousedown', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                ignoreOutsideUntil = performance.now() + 300;
+                const input = getActiveInputElement() || lastInput;
+                if (input) {
+                    input.focus();
+                    const range = lastKnownRange ? lastKnownRange.cloneRange() : getClonedSelectionRange();
+                    insertTag(input, tag.insertName || NAI_TAG_ALIASES[tag.en] || tag.en, range);
+                }
+                hideTagDetail(true);
+            });
+            card.querySelector('[data-action="copy-en"]').addEventListener('mousedown', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                copyTagDetailText(tag.en.replace(/_/g, ' '), event.currentTarget);
+            });
+            card.querySelector('[data-action="copy-zh"]').addEventListener('mousedown', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                copyTagDetailText(zh || tag.en.replace(/_/g, ' '), event.currentTarget);
+            });
+            card.querySelector('[data-action="wiki"]').addEventListener('mousedown', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                openWikiPage(tag.en);
+            });
+        }
+
+        function applyDetailDock() {
+            if (!tagDetailDocked) {
+                if (tagDetailCard) {
+                    tagDetailCard.classList.remove('is-docked', 'is-open');
+                    tagDetailCard.style.removeProperty('display');
+                    tagDetailCard.style.removeProperty('left');
+                    tagDetailCard.style.removeProperty('top');
+                    tagDetailCard.style.removeProperty('width');
+                    tagDetailCard.style.removeProperty('height');
+                    tagDetailCard.innerHTML = '';
+                }
+                tagDetailTag = null;
+                tagDetailItem = null;
+                tagDetailPointer = false;
+                tagDetailLocked = false;
+                return;
+            }
+            tagDetailLocked = false;
+            const card = getTagDetailCard();
+            card.classList.add('is-docked', 'is-open');
+            const selectedTag = selectedIndex >= 0 ? currentMatches[selectedIndex] : null;
+            if (tagDetailTag || selectedTag) {
+                renderTagDetailContent(tagDetailTag || selectedTag, card);
+                tagDetailTag = tagDetailTag || selectedTag;
+            } else {
+                card.dataset.tag = '';
+                card.innerHTML = `<div class="tag-detail-empty">${isChineseLocale
+                    ? '悬停标签查看详情，或点击标签固定。'
+                    : 'Hover a tag to view its details.'}</div>`;
+            }
+            syncDockedDetailPanel();
+        }
+
+        function toggleDetailDock(button) {
+            tagDetailDocked = !tagDetailDocked;
+            saveDetailDockPreference();
+            if (button) {
+                button.classList.toggle('active', tagDetailDocked);
+                const label = isChineseLocale
+                    ? (tagDetailDocked ? '关闭标签详情面板' : '固定标签详情面板')
+                    : (tagDetailDocked ? 'Hide tag details panel' : 'Dock tag details panel');
+                button.title = label;
+                button.setAttribute('aria-label', label);
+            }
+            applyDetailDock();
+        }
+
+        function showTagDetail(tag, item) {
+            if (!tagDetailDocked) return;
+            clearTimeout(tagDetailShowTimer);
+            clearTimeout(tagDetailHideTimer);
+            tagDetailShowTimer = setTimeout(() => {
+                if (tagDetailLocked) return;
+                if (!popup || !popup.contains(item)) return;
+                const card = getTagDetailCard();
+                tagDetailTag = tag;
+                tagDetailItem = item;
+                renderTagDetailContent(tag, card);
+                card.classList.add('is-docked', 'is-open');
+                syncDockedDetailPanel();
+            }, 80);
+        }
+
+        function scheduleTagDetailHide() {
+            if (tagDetailDocked) return;
+            clearTimeout(tagDetailHideTimer);
+            tagDetailHideTimer = setTimeout(() => hideTagDetail(), 180);
+        }
+
         function sortMatchesByPriority(matches, query, countOrder = 'desc') {
             const normalizedQuery = normalizeQuery(query.toLowerCase());
             return matches.sort((a, b) => {
@@ -3291,20 +4160,16 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 const bFav = favoriteTags.has(b.en);
                 const aExcl = excludedTags.has(a.en);
                 const bExcl = excludedTags.has(b.en);
-                // Favorites first
                 if (aFav && !bFav) return -1;
                 if (!aFav && bFav) return 1;
-                // Excluded last
                 if (aExcl && !bExcl) return 1;
                 if (!aExcl && bExcl) return -1;
-                // For favorites, check if query matches the start
                 if (aFav && bFav) {
                     const aStart = a.en.toLowerCase().startsWith(normalizedQuery);
                     const bStart = b.en.toLowerCase().startsWith(normalizedQuery);
                     if (aStart && !bStart) return -1;
                     if (!aStart && bStart) return 1;
                 }
-                // 其余候选按使用数量排序；方向由弹窗相对光标的位置决定。
                 const delta = (Number(a.count) || 0) - (Number(b.count) || 0);
                 return countOrder === 'asc' ? delta : -delta;
             });
@@ -3331,7 +4196,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             const queryLower = query.toLowerCase().trim();
             const queryNorm = queryLower.replace(/\s+/g, '_');
             const results = [];
-            // Search by NAI name (reverse lookup)
             for (const [naiKey, originals] of Object.entries(NAI_ALIAS_REVERSE)) {
                 const naiSpaced = naiKey.replace(/_/g, ' ');
                 if (naiKey.startsWith(queryNorm) || naiSpaced.startsWith(queryLower) ||
@@ -3341,7 +4205,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     }
                 }
             }
-            // Search by original name
             for (const [original, nai] of Object.entries(NAI_TAG_ALIASES)) {
                 const origLower = original.toLowerCase();
                 const origSpaced = origLower.replace(/_/g, ' ');
@@ -3396,15 +4259,54 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         }
         function applyTranslationPairs(pairs) {
             const merged = new Map(translations);
-            for (const [en, zh, category, count] of pairs) {
+            for (const [en, zh, category, count, notes] of pairs) {
                 if (!en || !zh) continue;
                 merged.set(en, zh);
                 if (category !== null && category !== undefined) {
-                    translationMeta.set(en, { category: Number(category), count: Number(count) || undefined });
+                    translationMeta.set(en, {
+                        category: Number(category),
+                        count: Number(count) || undefined,
+                        notes: notes || undefined,
+                    });
+                }
+                const existing = tagCatalog.get(en);
+                if (existing) {
+                    if (notes) existing.notes = notes;
+                } else if (category !== null && category !== undefined) {
+                    tagCatalog.set(en, {
+                        category: Number(category),
+                        count: Number(count) || undefined,
+                        notes: notes || undefined,
+                    });
                 }
             }
             translations = merged;
+            rebuildAliasIndex();
         }
+        const CJK_ALIAS_RE = /[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/;
+        function rebuildAliasIndex() {
+            const bucketMap = new Map();
+            for (const [en, meta] of tagCatalog.entries()) {
+                if (!meta || !meta.aliases || !meta.aliases.length) continue;
+                for (const alias of meta.aliases) {
+                    const key = String(alias).toLowerCase().trim();
+                    if (!key) continue;
+                    let bucket = bucketMap.get(key);
+                    if (!bucket) { bucket = []; bucketMap.set(key, bucket); }
+                    if (bucket[bucket.length - 1] !== en) bucket.push(en);
+                }
+            }
+            const all = [];
+            const cjk = [];
+            for (const [alias, tags] of bucketMap.entries()) {
+                const entry = { alias, norm: normalizeQuery(alias), spaced: alias.replace(/_/g, ' '), tags };
+                all.push(entry);
+                if (CJK_ALIAS_RE.test(alias)) cjk.push(entry);
+            }
+            aliasEntries = all;
+            cjkAliasEntries = cjk;
+        }
+
         function parseCsvLine(line) {
             const fields = [];
             let current = '';
@@ -3435,7 +4337,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             if (hasChinese(zh)) return zh;
             const chineseAlias = aliases.find(hasChinese);
             if (chineseAlias) return chineseAlias;
-            // 没有中文时使用备用名；跳过 Danbooru 的快捷写法（/com、:) 之类）。
             const fallbackAlias = aliases.find((alias) => alias.length > 1 && !alias.startsWith('/'));
             return fallbackAlias || aliases[0] || zh || tag;
         }
@@ -3451,10 +4352,13 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 const zh = fields[3].trim();
                 const category = Number(fields[1]);
                 const count = Number(fields[4]);
+                const notes = (fields[5] || '').trim();
                 if (en) {
                     tagCatalog.set(en, {
                         category: Number.isFinite(category) ? category : null,
                         count: Number.isFinite(count) ? count : undefined,
+                        notes: notes || undefined,
+                        aliases: aliases.length ? aliases : undefined,
                     });
                 }
                 const label = pickTranslationLabel(en, aliases, zh);
@@ -3464,15 +4368,60 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                         label,
                         Number.isFinite(category) ? category : null,
                         Number.isFinite(count) ? count : undefined,
+                        notes || undefined,
                     ]);
                 }
             }
             return pairs;
         }
+        const NAI_V5_TAG_GLOSSARY = [
+            ['depthness', '纵深阴影', 0],
+            ['attractive male', '有魅力的男性', 0],
+            ['low complexity', '低复杂度', 0],
+            ['medium complexity', '中等复杂度', 0],
+            ['high complexity', '高复杂度', 0],
+            ['ultra complexity', '超高复杂度', 0],
+            ['has alpha', '使用 Alpha 通道', 0],
+            ['transparent background', '透明背景', 0],
+            ['alpha transparency', 'Alpha 半透明', 0],
+            ['meta:novel era', '小说时代风格', 5],
+            ['meta:golden era', '黄金时代风格', 5],
+            ['year 2024', '2024 年', 5],
+            ['year 2025', '2025 年', 5],
+            ['year 2026', '2026 年', 5],
+            ['visual novel art', '视觉小说画风', 0],
+            ['visual novel bg', '视觉小说背景', 0],
+            ['visual novel cg', '视觉小说 CG', 0],
+            ['visual novel chibi', '视觉小说 Q 版', 0],
+            ['visual novel sprite', '视觉小说立绘', 0],
+            ['fur dataset', '兽人数据集（V5）', 5],
+            ['background dataset', '背景数据集（V5）', 5],
+            ['multiple views', '多视角', 0],
+            ['turnaround', '转面设定图', 0],
+            ['reference sheet', '角色设定图', 0],
+            ['cropped shoulders', '肩部裁切特写', 0],
+            ['expressions', '表情集', 0],
+            ['no text', '无文字', 0],
+        ];
+        const V5_TAG_KEYS = new Set(NAI_V5_TAG_GLOSSARY.map((entry) => entry[0]));
+        const V5_OFFICIAL_TAG_KEYS = new Set(
+            NAI_V5_TAG_GLOSSARY
+                .filter(([en]) => !/^year \d{4}$/i.test(en))
+                .map(([en]) => en),
+        );
+        const v5TagRank = (tag) => V5_TAG_KEYS.has(tag) ? 0 : 1;
+        function seedV5TagGlossary() {
+            for (const [en, zh, category] of NAI_V5_TAG_GLOSSARY) {
+                translations.set(en, zh);
+                translationMeta.set(en, { category });
+                tagCatalog.set(en, { category });
+            }
+        }
         function loadTranslations() {
             translations = new Map();
             translationMeta = new Map();
             tagCatalog = new Map();
+            seedV5TagGlossary();
         }
 
         function storageGet(key) {
@@ -3485,6 +4434,98 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             });
         }
 
+        function readPopupState() {
+            try {
+                const value = GM_getValue(POPUP_STATE_KEY, null);
+                return value && typeof value === 'object' ? value : null;
+            } catch (_) {
+                return null;
+            }
+        }
+        function writePopupState(state) {
+            try { GM_setValue(POPUP_STATE_KEY, state); } catch (_) { }
+        }
+        function persistPopupState() {
+            if (!popup || popup.style.display === 'none') return;
+            const rect = popup.getBoundingClientRect();
+            writePopupState({
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+                left: Math.round(rect.left),
+                top: Math.round(rect.top),
+                maximized: popup.classList.contains('is-maximized'),
+                pinned: popupPinned,
+                viewMode: popup.dataset.viewMode === 'list' ? 'list' : 'cards',
+                restoreRect: popup.dataset.restoreRect || null,
+            });
+        }
+        function applyPopupState(state) {
+            if (!popup || !state) return;
+            const width = Math.max(360, Math.min(Number(state.width) || 760, innerWidth - 16));
+            const height = Math.max(220, Math.min(Number(state.height) || 420, innerHeight - 16));
+            popup.style.width = `${Math.round(width)}px`;
+            popup.style.height = `${Math.round(height)}px`;
+            if (Number.isFinite(state.left) && Number.isFinite(state.top)) {
+                const left = Math.max(8, Math.min(state.left, innerWidth - width - 8));
+                const top = Math.max(8, Math.min(state.top, innerHeight - height - 8));
+                popupManualPosition = { left, top };
+                popup.style.left = `${left}px`;
+                popup.style.top = `${top}px`;
+            }
+            popup.dataset.viewMode = state.viewMode === 'list' ? 'list' : 'cards';
+            popupPinned = Boolean(state.pinned);
+            if (state.restoreRect) popup.dataset.restoreRect = state.restoreRect;
+            if (state.maximized) popup.classList.add('is-maximized');
+            syncDockedDetailPanel();
+        }
+        function restoreMaximizedRect() {
+            if (!popup) return null;
+            const rect = popup.getBoundingClientRect();
+            return {
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+                left: Math.round(rect.left),
+                top: Math.round(rect.top),
+            };
+        }
+        function toggleSuggestionView(button) {
+            if (!popup) return;
+            const listMode = popup.dataset.viewMode === 'list';
+            popup.dataset.viewMode = listMode ? 'cards' : 'list';
+            if (button) button.innerHTML = listMode ? CARD_VIEW_SVG : LIST_VIEW_SVG;
+            persistPopupState();
+            refreshPopupAfterFavoriteChange();
+        }
+        function toggleMaximize(button) {
+            if (!popup) return;
+            const maximized = popup.classList.toggle('is-maximized');
+            if (maximized) {
+                popup.dataset.restoreRect = JSON.stringify(restoreMaximizedRect());
+                const left = 8;
+                const top = 8;
+                popup.style.width = `${Math.max(360, innerWidth - 16)}px`;
+                popup.style.height = `${Math.max(220, innerHeight - 16)}px`;
+                popup.style.left = `${left}px`;
+                popup.style.top = `${top}px`;
+                popupManualPosition = { left, top };
+                if (button) button.textContent = '⤡';
+            } else {
+                let rect = null;
+                try { rect = JSON.parse(popup.dataset.restoreRect || 'null'); } catch (_) { }
+                if (rect) {
+                    popup.style.width = `${rect.width}px`;
+                    popup.style.height = `${rect.height}px`;
+                    popup.style.left = `${rect.left}px`;
+                    popup.style.top = `${rect.top}px`;
+                    popupManualPosition = { left: rect.left, top: rect.top };
+                }
+                if (button) button.textContent = '⤢';
+            }
+            applyScale();
+            persistPopupState();
+            refreshPopupAfterFavoriteChange();
+        }
+
         let cloudCacheLoaded = false;
         async function loadCloudCache() {
             if (cloudCacheLoaded) return;
@@ -3493,24 +4534,37 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 const data = await storageGet(REMOTE_CACHE_KEY);
                 const cloudCache = data[REMOTE_CACHE_KEY];
                 if (!cloudCache || !Array.isArray(cloudCache.translations)) return;
-                for (const [en, zh, category, count] of cloudCache.translations) {
+                for (const [en, zh, category, count, notes] of cloudCache.translations) {
                     if (!en || !zh) continue;
                     if (!translations.has(en)) translations.set(en, zh);
                     if (category !== null && category !== undefined) {
-                        translationMeta.set(en, { category: Number(category), count: Number(count) || undefined });
+                        translationMeta.set(en, {
+                            category: Number(category),
+                            count: Number(count) || undefined,
+                            notes: notes || undefined,
+                        });
                     }
                     if (!tagCatalog.has(en)) {
                         tagCatalog.set(en, {
                             category: category !== null && category !== undefined ? Number(category) : null,
                             count: Number(count) || undefined,
+                            notes: notes || undefined,
                         });
                     }
                 }
                 if (Array.isArray(cloudCache.catalog)) {
-                    for (const [en, category, count] of cloudCache.catalog) {
-                        if (en) tagCatalog.set(en, { category, count: Number(count) || undefined });
+                    for (const [en, category, count, notes, aliases] of cloudCache.catalog) {
+                        if (en) {
+                            tagCatalog.set(en, {
+                                category,
+                                count: Number(count) || undefined,
+                                notes: notes || undefined,
+                                aliases: Array.isArray(aliases) ? aliases : undefined,
+                            });
+                        }
                     }
                 }
+                rebuildAliasIndex();
                 remoteTranslationsAt = Number(cloudCache.updatedAt) || 0;
             } catch (_) { }
         }
@@ -3596,9 +4650,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                         updatedAt: remoteTranslationsAt,
                         translations: Array.from(translations.entries()).map(([en, zh]) => {
                             const meta = translationMeta.get(en);
-                            return meta ? [en, zh, meta.category, meta.count] : [en, zh];
+                            return meta ? [en, zh, meta.category, meta.count, meta.notes] : [en, zh];
                         }),
-                        catalog: Array.from(tagCatalog.entries()).map(([en, meta]) => [en, meta.category, meta.count]),
+                        catalog: Array.from(tagCatalog.entries()).map(([en, meta]) => [en, meta.category, meta.count, meta.notes, meta.aliases]),
                     };
                     const writeCache = () => {
                         try { chrome.storage.local.set({ [REMOTE_CACHE_KEY]: cacheData }); } catch (_) { }
@@ -3615,17 +4669,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 translationsLoading = false;
                 refreshTranslationView();
             }
-        }
-        function getTranslationHint() {
-            if (translationsLoading) {
-                return isChineseLocale ? '正在从云端加载 Danbooru 中文词库…' : 'Loading Danbooru Chinese dictionary…';
-            }
-            if (translationsError) {
-                return isChineseLocale
-                    ? '云端中文词库加载失败；标签联想仍可用，中文翻译暂缺'
-                    : 'Cloud Chinese dictionary failed; suggestions still work without translations';
-            }
-            return isChineseLocale ? '中文/别名来自 Danbooru 云端词库' : 'Chinese names and aliases from the Danbooru cloud dictionary';
         }
         function refreshTranslationView() {
             try { globalThis.__NAI_REFRESH_PROMPT_COLORS__?.(); } catch (_) { }
@@ -3645,6 +4688,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             if (!translations.size) return;
             const queryLower = query.toLowerCase();
             const rankedItems = [];
+            const seenZh = new Set();
             for (const [en, zh] of translations.entries()) {
                 const zhLower = zh.toLowerCase();
                 let score = 0;
@@ -3652,6 +4696,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 else if (zhLower.includes(queryLower)) score = 2;
                 if (score > 0) {
                     const meta = translationMeta.get(en);
+                    seenZh.add(en);
                     rankedItems.push({
                         score: score,
                         data: {
@@ -3662,9 +4707,36 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     });
                 }
             }
+            if (cjkAliasEntries.length) {
+                let aliasHits = 0;
+                for (const entry of cjkAliasEntries) {
+                    if (aliasHits >= 80) break;
+                    let score = -1;
+                    if (entry.alias.startsWith(queryLower)) score = 3;
+                    else if (entry.alias.includes(queryLower)) score = 4;
+                    if (score < 0) continue;
+                    for (const en of entry.tags) {
+                        if (seenZh.has(en)) continue;
+                        seenZh.add(en);
+                        const meta = translationMeta.get(en) || tagCatalog.get(en);
+                        rankedItems.push({
+                            score,
+                            data: {
+                                en,
+                                count: meta ? meta.count : undefined,
+                                category: meta ? meta.category : null,
+                                isAliasMatch: true,
+                            },
+                        });
+                        aliasHits += 1;
+                    }
+                }
+            }
             let finalMatches = rankedItems.sort((a, b) => (
-                a.score - b.score || (Number(b.data.count) || 0) - (Number(a.data.count) || 0)
-            )).map(item => item.data).slice(0, MAX_SUGGESTIONS);
+                a.score - b.score
+                || v5TagRank(a.data.en) - v5TagRank(b.data.en)
+                || (Number(b.data.count) || 0) - (Number(a.data.count) || 0)
+            )).map(item => item.data).slice(0, getMaxSuggestions());
             finalMatches = mergeMatchedFavorites(finalMatches, query);
             finalMatches = mergeNaiAliasMatches(finalMatches, query);
             updatePopup(input, finalMatches, null, query);
@@ -3695,12 +4767,40 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     },
                 });
             }
+            if (aliasEntries.length && queryNorm.length >= 2) {
+                const seenEn = new Set(rankedItems.map((item) => item.data.en));
+                let aliasHits = 0;
+                for (const entry of aliasEntries) {
+                    if (aliasHits >= 80) break;
+                    let score = -1;
+                    if (entry.norm === queryNorm || entry.spaced === querySpaced) score = 3;
+                    else if (entry.norm.startsWith(queryNorm) || entry.spaced.startsWith(querySpaced)) score = 4;
+                    else if (entry.norm.includes(queryNorm) || entry.spaced.includes(querySpaced)) score = 5;
+                    if (score < 0) continue;
+                    for (const en of entry.tags) {
+                        if (seenEn.has(en)) continue;
+                        seenEn.add(en);
+                        const meta = tagCatalog.get(en) || translationMeta.get(en);
+                        rankedItems.push({
+                            score,
+                            data: {
+                                en,
+                                count: meta ? meta.count : undefined,
+                                category: meta ? meta.category : null,
+                                isAliasMatch: true,
+                            },
+                        });
+                        aliasHits += 1;
+                    }
+                }
+            }
             if (!rankedItems.length) return false;
             let matches = rankedItems.sort((a, b) => (
                 a.score - b.score
+                || v5TagRank(a.data.en) - v5TagRank(b.data.en)
                 || (Number(b.data.count) || 0) - (Number(a.data.count) || 0)
                 || a.data.en.length - b.data.en.length
-            )).map((item) => item.data).slice(0, MAX_SUGGESTIONS);
+            )).map((item) => item.data).slice(0, getMaxSuggestions());
             matches = mergeMatchedFavorites(matches, query);
             matches = mergeNaiAliasMatches(matches, query);
             updatePopup(input, matches, null, query);
@@ -3757,7 +4857,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     url: `${DANBOORU_API_URL}/tags.json?${new URLSearchParams({
                         'search[name_matches]': searchPattern,
                         'search[order]': 'count',
-                        limit: String(MAX_SUGGESTIONS),
+                        limit: String(getMaxSuggestions()),
                         'search[hide_empty]': 'true',
                     }).toString()}`,
                     referer: 'https://danbooru.donmai.us/',
@@ -3769,7 +4869,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                         page: 'autocomplete2',
                         type: 'tag_query',
                         term: searchPattern,
-                        limit: String(MAX_SUGGESTIONS),
+                        limit: String(getMaxSuggestions()),
                     }).toString()}`,
                     referer: 'https://gelbooru.com/',
                     parse: parseGelbooruResponse,
@@ -3835,7 +4935,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 });
             };
 
-            // Danbooru 先发；220ms 内没有结果才同时请求 Gelbooru。
             startProvider(0);
             hedgeTimer = setTimeout(() => {
                 if (!settled) startProvider(1);
@@ -3850,7 +4949,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     updatePopup(input, finalMatches, null, query);
                 },
                 onFailure: function () {
-                    // 保留上一批在线结果；没有可用结果时才关闭弹窗。
                     if (!isPopupActive || !currentMatches.length) hidePopup();
                 },
             });
@@ -4015,7 +5113,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             const borderSoft = mixColors(border, panelBg, 0.45);
             const scroll = mixColors(panelBg, text, 0.24);
             const danger = isLight ? { r: 178, g: 40, b: 48, a: 1 } : { r: 255, g: 132, b: 132, a: 1 };
-            // 自定义主题的字体通常挂在主面板/页面上，优先取面板字体，再退回 body。
             const findComputedFont = (selectors) => {
                 for (const selector of selectors) {
                     const element = document.querySelector(selector);
@@ -4061,7 +5158,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             };
             for (const [name, value] of Object.entries(variables)) {
                 popup.style.setProperty(name, value);
-                // 右键菜单挂在 body 下，通过根变量继承同一套主题色。
                 document.documentElement.style.setProperty(name, value);
             }
             popup.dataset.naiTheme = isLight ? 'light' : 'dark';
@@ -4107,6 +5203,16 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 .toLowerCase()
                 .replace(/[\s_]+/g, '_');
         }
+        function resolveSuggestionCategory(tag) {
+            if (!tag) return null;
+            const own = tag.category;
+            if (own !== null && own !== undefined && Number.isFinite(Number(own))) {
+                const value = Number(own);
+                if (value >= 0) return value;
+            }
+            return lookupKnownCategory(tag.en);
+        }
+
         function lookupKnownCategory(tagName) {
             const raw = String(tagName || '').trim();
             if (!raw) return null;
@@ -4150,8 +5256,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             const HighlightCtor = page.Highlight;
             let refreshTimer = null;
 
-            // 云端 CSV 收录不全时（例如 fr-ee-dom），按需向 Danbooru 查询精确标签分类。
-            // 结果写入 GM 缓存，后续输入和刷新页面都能立即上色。
             const CATEGORY_CACHE_KEY = 'nai_prompt_category_cache_v1';
             const CATEGORY_CACHE_LIMIT = 3000;
             const categoryCache = new Map();
@@ -4271,7 +5375,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
 
             async function runCategoryLookup() {
                 categoryLookupTimer = null;
-                // 云端 CSV 尚未加载完时先不要逐词请求 API，避免把已有分类的常用标签也查一遍。
                 if (translationsLoading) {
                     categoryLookupTimer = setTimeout(runCategoryLookup, 400);
                     return;
@@ -4282,7 +5385,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 batch.forEach(([key]) => pendingCategoryTags.delete(key));
                 for (const [key, tag] of batch) {
                     const category = await fetchCategory(tag);
-                    // undefined 表示网络/接口失败，不缓存；null 表示 Danbooru 也没有该标签。
                     if (category === undefined) failedCategoryTags.add(key);
                     else rememberCategory(key, category === null ? -1 : category);
                     schedule(true);
@@ -4324,7 +5426,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 return block;
             }
 
-            // 按 ProseMirror 的段落和 <br> 分行收集文本，避免两行标签被拼成一个词。
             function getTextSegments(root) {
                 const segments = [];
                 let nodes = [];
@@ -4369,8 +5470,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 }
                 if (startIndex < 0) return null;
 
-                // 标签结尾可能正好落在下一个文本节点的开头（例如逗号被 ProseMirror 拆成独立节点）。
-                // 此时必须回退到前一个节点的末尾；否则 Range 的 end 会停留在文档末尾，整段都会被染色。
                 let endIndex = -1;
                 for (let i = startIndex; i < nodes.length; i += 1) {
                     const item = nodes[i];
@@ -4416,8 +5515,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     : null;
             }
 
-            // 先按完整标签查一次，保留 “hatsune miku (vocaloid)” 这类本身带括号的正式标签；
-            // 查不到时再逐层去掉 NovelAI 的权重括号、权重后缀和数值权重语法。
             function resolvePromptTag(text, start, end) {
                 const full = normalizePromptTag(text.slice(start, end));
                 const fullCategory = lookupKnownCategory(full) ?? lookupCachedCategory(full);
@@ -4437,7 +5534,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 for (let guard = 0; guard < 8; guard += 1) {
                     trimBounds();
                     const body = text.slice(left, right);
-                    // 数值权重：1.5::tag:: / 0.7::artist:name::；只给中间的内容上色。
                     const leadWeight = body.match(/^-?\d+(?:\.\d+)?::\s*/);
                     if (leadWeight) {
                         left += leadWeight[0].length;
@@ -4487,8 +5583,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 let prefixCategory = null;
                 const categoryPrefix = candidate.match(/^((artist|copyright|character|meta)\s*:\s*)/i);
                 if (categoryPrefix) {
-                    // “artist:veyonis” 里真正的标签名是 veyonis；只给前缀后面的
-                    // 画师名/作品名上色，让 artist: 本身保持中性。
                     lookupName = candidate.slice(categoryPrefix[1].length);
                     colorStart = left + categoryPrefix[1].length;
                     colorEnd = right;
@@ -4509,8 +5603,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     ?? (lookupName !== candidate
                         ? (lookupKnownCategory(lookupName) ?? lookupCachedCategory(lookupName))
                         : null);
-                // 即使暂未查到分类也返回 candidate，collectRanges 会把它排进按需查询队列。
-                // 带 artist: 前缀时查询裸标签名，避免把 artist:xxx 当成完整标签去查。
                 return {
                     start: colorStart,
                     end: colorEnd,
@@ -4522,13 +5614,18 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             function collectRanges() {
                 const buckets = new Map();
                 const unknownTags = [];
+                const separatorRe = /[,;\r\n]/g;
                 for (const root of getRoots()) {
                     for (const { text, nodes } of getTextSegments(root)) {
                         if (!text || !nodes.length) continue;
+                        const stops = [];
+                        separatorRe.lastIndex = 0;
+                        let separator;
+                        while ((separator = separatorRe.exec(text))) stops.push(separator.index);
+                        stops.push(text.length);
+
                         let index = 0;
-                        while (index < text.length) {
-                            const separator = text.slice(index).search(/[,;\r\n]/);
-                            const segmentEnd = separator === -1 ? text.length : index + separator;
+                        for (const segmentEnd of stops) {
                             const segment = text.slice(index, segmentEnd);
                             const start = index + (segment.match(/^\s*/)[0] || '').length;
                             const end = segmentEnd - (segment.match(/\s*$/)[0] || '').length;
@@ -4545,7 +5642,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                                     unknownTags.push(resolved.candidate);
                                 }
                             }
-                            index = separator === -1 ? text.length : segmentEnd + 1;
+                            index = segmentEnd + 1;
                         }
                     }
                 }
@@ -4609,7 +5706,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 if (!registry || typeof HighlightCtor !== 'function') return;
                 loadCategoryCache();
                 const style = Object.entries(CATEGORY_COLORS)
-                    // ::highlight 伪元素不支持 !important；加上反而会让整条规则失效。
                     .map(([category, color]) => `::highlight(nai-tag-${category}) { color: ${color}; -webkit-text-fill-color: ${color}; }`)
                     .join('\n');
                 GM_addStyle(style);
@@ -4647,12 +5743,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 }));
         }
 
-        function getFavoriteHint() {
-            return isChineseLocale
-                ? '点击插入收藏 · 右键可取消收藏'
-                : 'Click to insert · right-click to remove favorite';
-        }
-
         function getExcludedItems() {
             return Array.from(excludedTags)
                 .sort((a, b) => a.localeCompare(b, 'en'))
@@ -4664,14 +5754,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 }));
         }
 
-        function getExcludedHint() {
-            return isChineseLocale
-                ? '点击恢复这个 Tag · 右键也可取消排除'
-                : 'Click to restore this tag · right-click to un-exclude';
-        }
-
         function updatePopup(input, matches, overrideHint = null, query = '', view = 'suggest', countOrder = 'desc') {
             createPopup();
+            hideTagDetail(true);
             applyNovelAiPopupTheme(popup);
             hideContextMenu(true);
             lastInput = input;
@@ -4684,25 +5769,27 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 lastSuggestionQuery = query;
                 lastSuggestionHint = overrideHint;
                 lastSuggestionInput = input;
-                // Sort matches by favorites/excluded priority
                 if (query) {
                     matches = sortMatchesByPriority([...matches], query, countOrder);
                 }
             }
 
-            const hintHTML = overrideHint
-                ? `<div class="suggestion-hint error">${escapeSuggestionHtml(overrideHint)}</div>`
-                : `<div class="suggestion-hint">${escapeSuggestionHtml(
-                    view === 'favorites' ? getFavoriteHint()
-                        : view === 'excluded' ? getExcludedHint()
-                            : getTranslationHint()
-                )}</div>`;
             const queryHTML = query
                 ? `<span class="suggestion-query">${escapeSuggestionHtml(query)}</span>`
                 : '';
             const footerInsert = isChineseLocale ? '插入' : 'Insert';
             const footerSelect = isChineseLocale ? '选择' : 'Select';
             const footerClose = isChineseLocale ? '关闭' : 'Close';
+            const footerWiki = isChineseLocale ? '打开 Danbooru' : 'Open Danbooru';
+            const footerCtrlClick = isChineseLocale ? '左键' : 'Click';
+            const footerMaximize = isChineseLocale ? '最大化 / 还原' : 'Maximize / restore';
+            const footerViewMode = isChineseLocale ? '切换列表 / 卡片模式' : 'Switch list / card view';
+            const footerPin = isChineseLocale
+                ? (popupPinned ? '取消置顶' : '置顶浮层')
+                : (popupPinned ? 'Unpin popup' : 'Pin popup');
+            const footerDock = isChineseLocale
+                ? (tagDetailDocked ? '关闭标签详情面板' : '固定标签详情面板')
+                : (tagDetailDocked ? 'Hide tag details panel' : 'Dock tag details panel');
             const footerContext = view === 'favorites'
                 ? (isChineseLocale ? '右键取消收藏' : 'Right-click to remove favorite')
                 : view === 'excluded'
@@ -4719,31 +5806,71 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 </div>
                 ${queryHTML}
                 <span class="suggestion-spacer"></span>
+                <button class="suggestion-detail-dock${tagDetailDocked ? ' active' : ''}" type="button" aria-label="${footerDock}" title="${footerDock}">${DETAIL_DOCK_SVG}</button>
+                <button class="suggestion-pin${popupPinned ? ' active' : ''}" type="button" aria-label="${footerPin}" title="${footerPin}">${PIN_SVG}</button>
+                <button class="suggestion-view-toggle" type="button" aria-label="${footerViewMode}" title="${footerViewMode}">${popup && popup.dataset.viewMode === 'list' ? CARD_VIEW_SVG : LIST_VIEW_SVG}</button>
+                <button class="suggestion-maximize" type="button" aria-label="${footerMaximize}" title="${footerMaximize}">${popup && popup.classList.contains('is-maximized') ? '⤡' : '⤢'}</button>
                 <button class="suggestion-close" type="button" aria-label="${footerClose}">×</button>
             </div>
-            ${hintHTML}
             <div class="suggestion-scroll-wrapper"><div class="suggestion-list"></div></div>
             <div class="suggestion-footer">
                 <span><kbd>Tab</kbd><kbd>Enter</kbd>${footerInsert}</span>
                 <span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>${footerSelect}</span>
                 <span><kbd>Esc</kbd>${footerClose}</span>
+                <span><kbd>Ctrl</kbd>+${footerCtrlClick}${EXTERNAL_SVG}${footerWiki}</span>
                 <span>${footerContext}</span>
-            </div>`;
-
-            if (popupFixedHeight > 0) {
-                popup.style.height = `${popupFixedHeight}px`;
-            } else {
-                popup.style.height = '';
-            }
+            </div>
+            <div class="suggestion-resizer" aria-hidden="true"></div>`;
 
             const flexContainer = popup.querySelector('.suggestion-list');
             flexContainer.classList.remove('is-empty');
             flexContainer.classList.toggle('single-item', matches.length === 1);
+            const dockButton = popup.querySelector('.suggestion-detail-dock');
+            if (dockButton) {
+                dockButton.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    toggleDetailDock(dockButton);
+                });
+            }
+            const pinButton = popup.querySelector('.suggestion-pin');
+            if (pinButton) {
+                pinButton.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    popupPinned = !popupPinned;
+                    pinButton.classList.toggle('active', popupPinned);
+                    const label = isChineseLocale
+                        ? (popupPinned ? '取消置顶' : '置顶浮层')
+                        : (popupPinned ? 'Unpin popup' : 'Pin popup');
+                    pinButton.title = label;
+                    pinButton.setAttribute('aria-label', label);
+                    persistPopupState();
+                    if (popupPinned) showPopupAnimated();
+                });
+            }
+            const viewToggleButton = popup.querySelector('.suggestion-view-toggle');
+            if (viewToggleButton) {
+                viewToggleButton.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    toggleSuggestionView(viewToggleButton);
+                });
+            }
+            const maximizeButton = popup.querySelector('.suggestion-maximize');
+            if (maximizeButton) {
+                maximizeButton.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    toggleMaximize(maximizeButton);
+                });
+            }
             const closeButton = popup.querySelector('.suggestion-close');
             if (closeButton) {
                 closeButton.addEventListener('mousedown', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
+                    popupPinned = false;
                     hidePopup();
                 });
             }
@@ -4776,22 +5903,64 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     popupManualPosition = { left, top };
                     popup.style.left = `${left}px`;
                     popup.style.top = `${top}px`;
+                    syncDockedDetailPanel();
                 });
                 const endDrag = (event) => {
                     if (!drag || (event && event.pointerId !== drag.pointerId)) return;
                     drag = null;
                     dragHeader.style.cursor = 'grab';
                     try { dragHeader.releasePointerCapture(event.pointerId); } catch (_) { }
+                    persistPopupState();
                 };
                 dragHeader.addEventListener('pointerup', endDrag);
                 dragHeader.addEventListener('pointercancel', endDrag);
+            }
+
+            const resizer = popup.querySelector('.suggestion-resizer');
+            if (resizer) {
+                let resize = null;
+                resizer.addEventListener('pointerdown', (event) => {
+                    if (event.button !== 0) return;
+                    const rect = popup.getBoundingClientRect();
+                    resize = {
+                        pointerId: event.pointerId,
+                        startX: event.clientX,
+                        startY: event.clientY,
+                        width: rect.width,
+                        height: rect.height,
+                    };
+                    try { resizer.setPointerCapture(event.pointerId); } catch (_) { }
+                    event.preventDefault();
+                    event.stopPropagation();
+                });
+                resizer.addEventListener('pointermove', (event) => {
+                    if (!resize || event.pointerId !== resize.pointerId) return;
+                    const rect = popup.getBoundingClientRect();
+                    const maxWidth = Math.max(360, innerWidth - rect.left - 8);
+                    const maxHeight = Math.max(220, innerHeight - rect.top - 8);
+                    const width = Math.max(360, Math.min(maxWidth, resize.width + event.clientX - resize.startX));
+                    const height = Math.max(220, Math.min(maxHeight, resize.height + event.clientY - resize.startY));
+                    popup.style.width = `${Math.round(width)}px`;
+                    popup.style.height = `${Math.round(height)}px`;
+                    applyScale();
+                    updateSuggestionColumns();
+                });
+                const endResize = (event) => {
+                    if (!resize || (event && event.pointerId !== resize.pointerId)) return;
+                    resize = null;
+                    try { resizer.releasePointerCapture(event.pointerId); } catch (_) { }
+                    applyScale();
+                    persistPopupState();
+                    refreshPopupAfterFavoriteChange();
+                };
+                resizer.addEventListener('pointerup', endResize);
+                resizer.addEventListener('pointercancel', endResize);
             }
 
             popup.querySelectorAll('.suggestion-tab').forEach((tab) => {
                 tab.addEventListener('mousedown', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    if (popup.offsetHeight) popupFixedHeight = popup.offsetHeight;
                     if (tab.dataset.view === 'favorites') {
                         updatePopup(input, getFavoriteItems(), null, '', 'favorites');
                     } else if (tab.dataset.view === 'excluded') {
@@ -4831,8 +6000,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             matches.forEach((tag, index) => {
                 const item = document.createElement('div');
                 item.className = 'suggestion-item';
-                if (tag.category !== null && tag.category !== undefined && Number.isFinite(Number(tag.category))) {
-                    item.dataset.category = String(Number(tag.category));
+                const resolvedCategory = resolveSuggestionCategory(tag);
+                if (resolvedCategory !== null) {
+                    item.dataset.category = String(resolvedCategory);
                 }
                 const naiAlias = NAI_TAG_ALIASES[tag.en];
                 const enText = escapeSuggestionHtml(tag.en.replace(/_/g, ' '));
@@ -4840,35 +6010,46 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 const zhDisplay = zhText
                     ? escapeSuggestionHtml(zhText)
                     : (isChineseLocale ? '暂无翻译' : 'No translation yet');
-                // Store the name to insert (NAI version if available)
                 tag.insertName = naiAlias || tag.en;
-                const aliasLine = naiAlias
-                    ? `<div class="suggestion-alias">${isChineseLocale ? '插入为' : 'Insert as'} <b>${escapeSuggestionHtml(naiAlias.replace(/_/g, ' '))}</b></div>`
-                    : '';
-                const countText = formatSuggestionCount(tag.count);
-                const countHTML = countText ? `<span class="suggestion-count">${countText}</span>` : '';
-                // Add icon for favorite/excluded tags
+                const countText = formatSuggestionCount(tag.count) || '—';
+                const countHTML = `<span class="suggestion-count">${countText}</span>`;
                 let iconHTML = '<span class="suggestion-icon"></span>';
                 if (view === 'favorites' || favoriteTags.has(tag.en)) {
                     iconHTML = `<span class="suggestion-icon fav-icon">${STAR_SVG}</span>`;
                 } else if (excludedTags.has(tag.en)) {
                     iconHTML = `<span class="suggestion-icon excl-icon">${CROSS_SVG}</span>`;
                 }
-                const categoryHTML = tag.category === null || tag.category === undefined
-                    ? ''
-                    : `<span class="suggestion-category">${escapeSuggestionHtml(suggestionCategoryLabel(tag.category))}</span>`;
-                item.innerHTML = `${iconHTML}<div class="suggestion-content">
-                    <div class="suggestion-title-line">
-                        ${categoryHTML}
-                        <span class="suggestion-en">${enText}</span>
-                    </div>
-                    <div class="suggestion-zh${zhText ? '' : ' missing'}">${zhDisplay}</div>
-                    ${aliasLine}
-                </div>${countHTML}`;
-                item.title = `${tag.en}${zhText ? ` — ${zhText}` : ''}${naiAlias ? ` · ${isChineseLocale ? '插入为' : 'Insert as'} ${naiAlias.replace(/_/g, ' ')}` : ''}`;
-                item.addEventListener('mouseover', () => {
-                    isKeyboardNavigation = false;
-                    if (selectedIndex !== index) { selectedIndex = index; updateSelectionUI(); }
+                const categoryLabel = resolvedCategory === null
+                    ? '—'
+                    : suggestionCategoryLabel(resolvedCategory);
+                const categoryHTML = `<span class="suggestion-category">${escapeSuggestionHtml(categoryLabel)}</span>`;
+                const officialHTML = V5_OFFICIAL_TAG_KEYS.has(tag.en)
+                    ? '<span class="suggestion-official">官方</span>'
+                    : '';
+                item.innerHTML = `${iconHTML}${countHTML}${officialHTML}<div class="suggestion-main">${categoryHTML}<span class="suggestion-en">${enText}</span></div><span class="suggestion-zh${zhText ? '' : ' missing'}">${zhDisplay}</span>`;
+                item.dataset.index = String(index);
+                item.addEventListener('mouseenter', () => {
+                    clearTimeout(itemHoverTimer);
+                    showTagDetail(tag, item);
+                    itemHoverTimer = setTimeout(() => {
+                        if (!isPopupActive || tagDetailPointer) return;
+                        isKeyboardNavigation = false;
+                        tagDetailLocked = false;
+                        if (selectedIndex !== index) { selectedIndex = index; updateSelectionUI(); }
+                    }, 120);
+                });
+                item.addEventListener('mouseleave', (event) => {
+                    clearTimeout(itemHoverTimer);
+                    if (tagDetailDocked && tagDetailCard && tagDetailCard.classList.contains('is-open')) {
+                        const cardRect = tagDetailCard.getBoundingClientRect();
+                        const itemRect = item.getBoundingClientRect();
+                        const panelOnRight = cardRect.left >= itemRect.right - 2;
+                        const movedTowardPanel = panelOnRight
+                            ? event.clientX >= itemRect.right - 6
+                            : event.clientX <= itemRect.left + 6;
+                        if (movedTowardPanel) tagDetailLocked = true;
+                    }
+                    scheduleTagDetailHide();
                 });
                 item.addEventListener('mousedown', (e) => {
                     if (e.button !== 0) return;
@@ -4877,7 +6058,8 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     selectedIndex = index;
                     updateSelectionUI();
                     const pressedItem = e.currentTarget;
-                    if (view === 'excluded') {
+                    if (e.ctrlKey) { openWikiPage(tag.en); }
+                    else if (view === 'excluded') {
                         pressSuggestionItem(pressedItem, () => {
                             ignoreOutsideUntil = performance.now() + 300;
                             requestAnimationFrame(() => {
@@ -4885,8 +6067,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                                 updatePopup(lastInput || input, getExcludedItems(), null, '', 'excluded');
                             });
                         });
-                    } else if (e.ctrlKey && view !== 'favorites') { openWikiPage(tag.en); }
-                    else {
+                    } else {
                         const currentInput = getActiveInputElement();
                         if (currentInput) {
                             const rangeToRestore = lastKnownRange ? lastKnownRange.cloneRange() : getClonedSelectionRange();
@@ -4901,7 +6082,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 item.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Save selection before showing context menu to prevent cursor loss
                     const currentInput = getActiveInputElement();
                     if (currentInput) {
                         const range = getClonedSelectionRange();
@@ -4922,7 +6102,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     return;
                 }
                 const onRight = popup.dataset.naiPopupSide === 'right';
-                // above: 最后一项在最靠近光标的底角；below/side: 第一项在最靠近光标的顶角。
                 const reverseX = placement === 'above' ? onRight : !onRight;
                 flexContainer.classList.toggle('reverse-x', reverseX);
             }
@@ -4971,7 +6150,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 let textBefore = fullText.substring(0, start);
                 const textAfter = fullText.substring(end);
 
-                // 只对以分隔符开头的标签检查重叠（如 :> 这类表情符号）
                 if (cleanTag.length > 0 && BREAK_CHARS.includes(cleanTag[0])) {
                     for (let overlap = Math.min(textBefore.length, cleanTag.length); overlap > 0; overlap--) {
                         if (textBefore.endsWith(cleanTag.substring(0, overlap))) {
@@ -4992,11 +6170,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     formattedText += ' ';
                 }
 
-                // 计算插入位置之前有多少个同名 tag
                 let countBefore = 0;
                 let searchPos = 0;
                 while ((searchPos = textBefore.indexOf(cleanTag, searchPos)) !== -1) {
-                    // 确保是完整的 tag（前后是边界字符或字符串边界）
                     const charBefore = searchPos > 0 ? textBefore[searchPos - 1] : ',';
                     const charAfter = searchPos + cleanTag.length < textBefore.length ? textBefore[searchPos + cleanTag.length] : ',';
                     if ((BREAK_CHARS.includes(charBefore) || /\s/.test(charBefore)) &&
@@ -5006,7 +6182,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     searchPos += cleanTag.length;
                 }
 
-                // 在格式化后的文本中找到第 countBefore+1 个同名 tag
                 let newCursorPos = -1;
                 let foundIndex = -1;
                 searchPos = 0;
@@ -5079,27 +6254,54 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             window.__NAIWeightAdjustingUntil = Date.now() + 500;
             hidePopup();
         }
-        function createPopup() { if (!popup) { popup = document.createElement('div'); popup.className = 'autocomplete-container'; document.body.appendChild(popup); } }
+        function createPopup() {
+            if (popup) return;
+            popup = document.createElement('div');
+            popup.className = 'autocomplete-container';
+            popup.dataset.viewMode = 'cards';
+            popup.addEventListener('scroll', () => hideTagDetail(true), true);
+            document.body.appendChild(popup);
+            applyPopupState(readPopupState());
+            tagDetailDocked = readDetailDockPreference();
+            applyDetailDock();
+            applyScale();
+        }
         function pressSuggestionItem(item, after) {
             after();
         }
         function showPopupAnimated() {
             if (!popup) return;
+            if (!popup.classList.contains('is-maximized')) {
+                const state = readPopupState();
+                if (state) {
+                    const width = Math.max(360, Math.min(Number(state.width) || 760, innerWidth - 16));
+                    const height = Math.max(220, Math.min(Number(state.height) || 420, innerHeight - 16));
+                    popup.style.width = `${Math.round(width)}px`;
+                    popup.style.height = `${Math.round(height)}px`;
+                }
+            }
             popup.classList.remove('is-closing');
             popup.style.pointerEvents = '';
             popup.classList.add('is-open');
             popup.style.display = 'flex';
+            applyScale();
+            syncDockedDetailPanel();
+            updateSuggestionColumns();
         }
         function hidePopup(immediate = false) {
+            if (popupPinned) {
+                hideTagDetail(true);
+                return;
+            }
             requestSequence++;
-            popupManualPosition = null;
-            popupFixedHeight = 0;
+            hideTagDetail(true);
+            persistPopupState();
             if (popup) {
                 popup.classList.remove('is-open', 'is-closing');
                 popup.style.display = 'none';
-                popup.style.height = '';
                 popup.style.pointerEvents = '';
             }
+            syncDockedDetailPanel();
             hideContextMenu();
             if (apiAbortController) apiAbortController.abort();
             selectedIndex = -1;
@@ -5154,6 +6356,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             if (popupManualPosition) {
                 popup.style.left = `${popupManualPosition.left}px`;
                 popup.style.top = `${popupManualPosition.top}px`;
+                syncDockedDetailPanel();
                 return null;
             }
             if (popupPositionLock) {
@@ -5162,12 +6365,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 popup.style.top = `${locked.top}px`;
                 popup.dataset.naiPopupSide = locked.side;
                 popup.dataset.naiPlacement = locked.placement;
+                syncDockedDetailPanel();
                 return locked.placement;
             }
             const caret = getCaretAnchorRect(input);
-            popup.style.maxHeight = '';
-            const width = Math.min(popup.offsetWidth || 700, innerWidth - 16);
-            const height = popup.offsetHeight || 430;
+            const width = Math.min(popup.offsetWidth || 760, innerWidth - 16);
+            const height = popup.offsetHeight || 420;
             const gap = 6;
             const viewLeft = 8;
             const viewRight = innerWidth - 8;
@@ -5186,32 +6389,48 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 top = aboveTop;
                 placement = 'above';
             } else if (spaceBelow >= 120) {
-                // 下面有可用空间就优先向下展开；内容过高时限制高度并滚动，
-                // 不要因为“完整高度放不下”就跳到左侧/右侧。
                 top = belowTop;
                 placement = 'below';
-                popup.style.maxHeight = `${Math.max(120, spaceBelow)}px`;
             } else {
                 top = caret.top - gap;
                 placement = 'side';
             }
-            const fitHeight = placement === 'below'
-                ? Math.min(height, Math.max(120, spaceBelow))
-                : height;
-            const maxTop = innerHeight - fitHeight - 8;
+            const maxTop = Math.max(viewTop, innerHeight - height - 8);
             left = Math.max(viewLeft, Math.min(left, viewRight - width));
             top = Math.max(viewTop, Math.min(top, maxTop));
             popup.style.top = `${top}px`;
             popup.style.left = `${left}px`;
             popup.dataset.naiPopupSide = left >= caretRight - 1 ? 'right' : 'left';
             popup.dataset.naiPlacement = placement;
+            syncDockedDetailPanel();
             return placement;
         }
+        function updateSuggestionColumns() {
+            if (!popup) return;
+            const list = popup.querySelector('.suggestion-list');
+            if (!list) return;
+            if (popup.dataset.viewMode === 'list') {
+                list.style.gridTemplateColumns = '';
+                return;
+            }
+            const width = popup.clientWidth || 760;
+            const columns = Math.max(2, Math.min(4, Math.floor((width - 10) / (220 * popupScale))));
+            list.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
+        }
+
         function updateSelectionUI() {
             const items = popup.querySelectorAll('.suggestion-item');
             items.forEach((item, index) => item.classList.toggle('selected', index === selectedIndex));
             const selectedEl = popup.querySelector('.selected');
             if (selectedEl) selectedEl.scrollIntoView({ block: 'nearest' });
+            if (tagDetailDocked && tagDetailCard && tagDetailCard.classList.contains('is-open') && !tagDetailLocked) {
+                const tag = selectedIndex >= 0 ? currentMatches[selectedIndex] : null;
+                if (tag && tagDetailCard.dataset.tag !== tag.en) {
+                    tagDetailTag = tag;
+                    tagDetailItem = selectedEl || null;
+                    renderTagDetailContent(tag, tagDetailCard);
+                }
+            }
         }
         function getSuggestionRows() {
             const items = popup ? [...popup.querySelectorAll('.suggestion-item')] : [];
@@ -5230,7 +6449,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             return { items, rows };
         }
 
-        // 按屏幕上的实际位置导航，兼容弹窗在上方/下方、以及 RTL 反向列。
         function navigateSuggestion(key) {
             const { items, rows } = getSuggestionRows();
             if (!items.length) return;
@@ -5246,13 +6464,13 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             let target = null;
             const currentRow = rows[rowIndex].items;
             if (key === 'ArrowLeft') {
-                target = colIndex > 0
-                    ? currentRow[colIndex - 1]
-                    : currentRow[currentRow.length - 1];
+                target = currentRow.length > 1
+                    ? (colIndex > 0 ? currentRow[colIndex - 1] : currentRow[currentRow.length - 1])
+                    : items[(index - 1 + items.length) % items.length];
             } else if (key === 'ArrowRight') {
-                target = colIndex < currentRow.length - 1
-                    ? currentRow[colIndex + 1]
-                    : currentRow[0];
+                target = currentRow.length > 1
+                    ? (colIndex < currentRow.length - 1 ? currentRow[colIndex + 1] : currentRow[0])
+                    : items[(index + 1) % items.length];
             } else if (key === 'ArrowUp') {
                 const row = rows[rowIndex > 0 ? rowIndex - 1 : rows.length - 1].items;
                 target = row[Math.min(colIndex, row.length - 1)];
@@ -5289,14 +6507,12 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             })();
             if (textBeforeCursor.endsWith(',')) { hidePopup(); return; }
 
-            // 检测表情符号模式：以 : 或 ; 开头，可能后跟 _ < > 等符号（不含 |，NAI会转换）
             const emoticonMatch = textBeforeCursor.match(/(?:^|[,\s\n\r{[\|])([;:][_<>\-\\\/;:]*?)$/);
             if (emoticonMatch) {
                 const emoticonQuery = emoticonMatch[1];
                 debounceTimeout = setTimeout(() => {
                     const now = Date.now();
                     if (window.__NAIWeightAdjusting || now < window.__NAIWeightAdjustingUntil) { hidePopup(); return; }
-                    // 表情符号查询：同时搜索 NAI 别名和 Danbooru API
                     fetchEmoticonSuggestions(emoticonQuery, input);
                 }, DEBOUNCE_DELAY_EMOTICON);
                 return;
@@ -5312,10 +6528,8 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 if (!ALLOWED_CHARS_REGEX.test(currentQuery)) { hidePopup(); return; }
                 if (/^\d*\.?\d*$/.test(currentQuery)) { hidePopup(); return; }
                 if (/[\u4e00-\u9fa5]/.test(currentQuery)) {
-                    // Gelbooru/Danbooru 只有英文标签；中文查询必须用云端中文词库反查。
                     searchLocalSuggestions(currentQuery, input);
                 } else {
-                    // 先用已下载的云端词库即时显示英文候选，在线结果返回后覆盖。
                     if (activeView !== 'suggest') hidePopup();
                     const localPreview = searchLocalEnglish(currentQuery, input);
                     if (!localPreview) {
@@ -5337,6 +6551,7 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             }, DEBOUNCE_DELAY);
         }
         function handleKeydown(e) {
+            if (e.isComposing || e.keyCode === 229) return;
             if (e.ctrlKey) { return; }
             if (e.key === ',') { cancelPendingSuggestions(); hidePopup(); return; }
             const arrowKeys = ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'];
@@ -5379,8 +6594,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             const clickedInPopup = popup && popup.contains(e.target);
             const clickedInInput = input && input.contains(e.target);
             const clickedInContext = contextMenu && contextMenu.contains(e.target);
-            if (!clickedInPopup && !clickedInInput && !clickedInContext) { cancelPendingSuggestions(); }
-            if (isPopupActive && popup && !clickedInPopup && !clickedInInput && !clickedInContext) { hidePopup(); }
+            const clickedInDetail = tagDetailCard && tagDetailCard.contains(e.target);
+            if (!clickedInPopup && !clickedInInput && !clickedInContext && !clickedInDetail) { cancelPendingSuggestions(); }
+            if (isPopupActive && popup && !clickedInPopup && !clickedInInput && !clickedInContext && !clickedInDetail) { hidePopup(); }
         }
         function init() {
             loadTranslations();
@@ -5391,6 +6607,10 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             document.addEventListener('keyup', saveSelection);
             document.addEventListener('mouseup', saveSelection);
             document.addEventListener('selectionchange', saveSelection);
+            window.addEventListener('resize', () => {
+                if (popup && popup.classList.contains('is-open')) updateSuggestionColumns();
+                applyScale();
+            });
             try { PromptCategoryColors.init(); } catch (_) { }
         }
         function openFavorites() {
@@ -5438,11 +6658,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             const range = selection.getRangeAt(0);
             const fullText = inputElement.textContent || '';
 
-            // 辅助函数：计算节点在 inputElement 中的全局文本偏移量
             function computeGlobalOffset(node, offset) {
                 let globalOffset = 0;
                 if (node.nodeType === 3) {
-                    // 文本节点：遍历找到该节点前的所有文本长度
                     const treeWalker = document.createTreeWalker(inputElement, NodeFilter.SHOW_TEXT);
                     let currentNode;
                     while ((currentNode = treeWalker.nextNode())) {
@@ -5451,12 +6669,10 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     }
                     globalOffset += offset;
                 } else if (node === inputElement || inputElement.contains(node)) {
-                    // 元素节点：offset 是子节点索引，计算前面子节点的文本长度
                     const children = node.childNodes;
                     for (let i = 0; i < offset && i < children.length; i++) {
                         globalOffset += children[i].textContent?.length || 0;
                     }
-                    // 如果 node 不是 inputElement，还需要加上 node 之前的文本长度
                     if (node !== inputElement) {
                         const treeWalker = document.createTreeWalker(inputElement, NodeFilter.SHOW_ALL);
                         let currentNode;
@@ -5474,11 +6690,9 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 return Math.max(0, Math.min(globalOffset, fullText.length));
             }
 
-            // 计算选区开始和结束位置
             const globalStartOffset = computeGlobalOffset(range.startContainer, range.startOffset);
             const globalEndOffset = computeGlobalOffset(range.endContainer, range.endOffset);
 
-            // 使用选区中间位置，更容易命中标签
             const globalOffset = Math.floor((globalStartOffset + globalEndOffset) / 2);
 
             const BOUNDARY_CHARS = new Set([',', '\n', '{', '}', '[', ']', '|']);
@@ -5552,7 +6766,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 if (stopAtClose && text.startsWith('::', i)) { return { items, index: i + 2, closeStart: i, closeEnd: i + 2 }; }
                 if (i >= text.length) { break; }
 
-                // 检查 || ... || 随机组
                 if (text.startsWith('||', i)) {
                     const randomStart = i;
                     i += 2;
@@ -5572,7 +6785,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     }
                 }
 
-                // 检查 { ... } 大括号权重
                 if (text[i] === '{') {
                     const braceStart = i;
                     i += 1;
@@ -5595,7 +6807,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                     }
                 }
 
-                // 检查 [ ... ] 方括号减权
                 if (text[i] === '[') {
                     const bracketStart = i;
                     i += 1;
@@ -5770,9 +6981,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 }
                 const childrenStart = state.output.length;
                 serializeSequence(node.children, state);
-                // Fix: if content inside group ends with digits (as part of a tag name),
-                // NAI would misinterpret trailing digits + :: as a weight prefix.
-                // Insert a comma to prevent this, e.g. "style1999" -> "style1999," before "::"
                 const childrenContent = state.output.slice(childrenStart);
                 if (/\d$/.test(childrenContent) && /[a-zA-Z_]/.test(childrenContent)) {
                     state.output += ',';
@@ -5842,10 +7050,8 @@ globalThis.NAI_ZH_DICT = Object.freeze({
                 } else if (node.type === 'group') {
                     const groupEnd = node.closeEnd ?? node.closeStart ?? Infinity;
                     const newAncestors = ancestors.concat({ groupNode: node, entry: item, parentSequence: sequence, index: i });
-                    // 先尝试精确匹配
                     const result = findTagNodeByOffset(node.children, offset, newAncestors, depth + 1);
                     if (result) { return result; }
-                    // 如果在 group 范围内但没有精确匹配，返回第一个 tag
                     if (node.start <= offset && offset <= groupEnd) {
                         const firstTag = findFirstTagInSequence(node.children, newAncestors, depth + 1);
                         if (firstTag) return firstTag;
@@ -5871,7 +7077,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
             const step = 0.05;
             const tagNode = target.item.node;
             const ancestors = target.ancestors;
-            // 找到最近的 group 祖先（忽略 brace 和 random）
             let groupAncestorIndex = -1;
             for (let i = ancestors.length - 1; i >= 0; i--) {
                 if (ancestors[i].groupNode) {
@@ -6053,8 +7258,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
         }
         return { init, parsePromptStructure, normalizeTree, serializeTree, updateInputContent };
     })();
-    window.__NAI_PROMPT_HELPER__ = TagAssist;
-
     function init() {
         TagAssist.init();
         WeightShortcuts.init();
@@ -6063,10 +7266,6 @@ globalThis.NAI_ZH_DICT = Object.freeze({
     else { init(); }
 })();
 
-
-// ---------------------------------------------------------------------------
-// 油猴菜单：切换汉化 / 重新扫描。
-// ---------------------------------------------------------------------------
 let naiZhEnabled = naiZhReadEnabled();
 
 function naiZhToast(message) {
@@ -6115,9 +7314,6 @@ function naiZhToggle() {
   naiZhToast(naiZhEnabled ? 'NovelAI 界面汉化已开启' : '已恢复英文界面');
 }
 
-// 不注册任何油猴菜单命令；汉化开关保留 Alt + Shift + C 快捷键。
-
-// 与扩展版保持一致的快捷键：Alt + Shift + C。
 addEventListener(
   'keydown',
   (event) => {
@@ -6131,7 +7327,3 @@ addEventListener(
 );
 
 })();
-
-
-
-

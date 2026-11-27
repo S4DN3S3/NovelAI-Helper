@@ -27,10 +27,6 @@
     writeValue(key, value);
   };
 
-  globalThis.GM_deleteValue = function (key) {
-    try { localStorage.removeItem(PREFIX + key); } catch (_) { }
-  };
-
   globalThis.GM_addStyle = function (css) {
     const style = document.createElement('style');
     style.textContent = css;
